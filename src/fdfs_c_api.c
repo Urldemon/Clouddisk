@@ -18,7 +18,6 @@ int fdfs_upload_file(const char *conf_filename,const char *local_filename,char *
 	int result;
 	int store_path_index;
 	ConnectionInfo storageServer;
-//	char file_id[128];
 	
     // 初始化
 	if ((result=fdfs_client_init(conf_filename)) != 0)

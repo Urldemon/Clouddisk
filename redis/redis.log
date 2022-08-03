@@ -1,0 +1,105 @@
+13385:C 28 Jul 2022 13:32:37.465 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+13385:C 28 Jul 2022 13:32:37.465 # Redis version=255.255.255, bits=64, commit=00000000, modified=0, pid=13385, just started
+13385:C 28 Jul 2022 13:32:37.465 # Configuration loaded
+13385:M 28 Jul 2022 13:32:37.465 * Increased maximum number of open files to 10032 (it was originally set to 1024).
+13385:M 28 Jul 2022 13:32:37.465 * monotonic clock: POSIX clock_gettime
+13385:M 28 Jul 2022 13:32:37.466 * Running mode=standalone, port=6379.
+13385:M 28 Jul 2022 13:32:37.466 # Server initialized
+13385:M 28 Jul 2022 13:32:37.466 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+13385:M 28 Jul 2022 13:32:37.467 # Fatal error: can't open the RDB file dump.rdb for reading: No such file or directory
+13385:M 28 Jul 2022 13:32:37.467 * Ready to accept connections
+13385:M 28 Jul 2022 13:35:34.605 # User requested shutdown...
+13385:M 28 Jul 2022 13:35:34.605 * Saving the final RDB snapshot before exiting.
+13385:M 28 Jul 2022 13:35:34.612 * DB saved on disk
+13385:M 28 Jul 2022 13:35:34.612 * Removing the pid file.
+13385:M 28 Jul 2022 13:35:34.613 # Redis is now ready to exit, bye bye...
+13542:C 28 Jul 2022 13:35:50.377 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+13542:C 28 Jul 2022 13:35:50.377 # Redis version=255.255.255, bits=64, commit=00000000, modified=0, pid=13542, just started
+13542:C 28 Jul 2022 13:35:50.377 # Configuration loaded
+13542:M 28 Jul 2022 13:35:50.378 * Increased maximum number of open files to 10032 (it was originally set to 1024).
+13542:M 28 Jul 2022 13:35:50.378 * monotonic clock: POSIX clock_gettime
+13542:M 28 Jul 2022 13:35:50.379 * Running mode=standalone, port=6379.
+13542:M 28 Jul 2022 13:35:50.379 # Server initialized
+13542:M 28 Jul 2022 13:35:50.379 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+13542:M 28 Jul 2022 13:35:50.379 * Loading RDB produced by version 255.255.255
+13542:M 28 Jul 2022 13:35:50.379 * RDB age 16 seconds
+13542:M 28 Jul 2022 13:35:50.379 * RDB memory usage when created 1.01 Mb
+13542:M 28 Jul 2022 13:35:50.379 * Done loading RDB, keys loaded: 0, keys expired: 0.
+13542:M 28 Jul 2022 13:35:50.379 * DB loaded from disk: 0.000 seconds
+13542:M 28 Jul 2022 13:35:50.379 * Ready to accept connections
+13542:M 28 Jul 2022 13:36:14.765 # User requested shutdown...
+13542:M 28 Jul 2022 13:36:14.765 * Saving the final RDB snapshot before exiting.
+13542:M 28 Jul 2022 13:36:14.773 * DB saved on disk
+13542:M 28 Jul 2022 13:36:14.773 * Removing the pid file.
+13542:M 28 Jul 2022 13:36:14.773 # Redis is now ready to exit, bye bye...
+13778:C 28 Jul 2022 13:42:30.444 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+13778:C 28 Jul 2022 13:42:30.444 # Redis version=255.255.255, bits=64, commit=00000000, modified=0, pid=13778, just started
+13778:C 28 Jul 2022 13:42:30.444 # Configuration loaded
+13778:M 28 Jul 2022 13:42:30.444 * Increased maximum number of open files to 10032 (it was originally set to 1024).
+13778:M 28 Jul 2022 13:42:30.444 * monotonic clock: POSIX clock_gettime
+13778:M 28 Jul 2022 13:42:30.445 * Running mode=standalone, port=6379.
+13778:M 28 Jul 2022 13:42:30.445 # Server initialized
+13778:M 28 Jul 2022 13:42:30.445 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+13778:M 28 Jul 2022 13:42:30.445 * Loading RDB produced by version 255.255.255
+13778:M 28 Jul 2022 13:42:30.445 * RDB age 376 seconds
+13778:M 28 Jul 2022 13:42:30.445 * RDB memory usage when created 0.91 Mb
+13778:M 28 Jul 2022 13:42:30.445 * Done loading RDB, keys loaded: 1, keys expired: 0.
+13778:M 28 Jul 2022 13:42:30.446 * DB loaded from disk: 0.000 seconds
+13778:M 28 Jul 2022 13:42:30.446 * Ready to accept connections
+13778:M 28 Jul 2022 13:42:52.809 # User requested shutdown...
+13778:M 28 Jul 2022 13:42:52.809 * Saving the final RDB snapshot before exiting.
+13778:M 28 Jul 2022 13:42:52.849 * DB saved on disk
+13778:M 28 Jul 2022 13:42:52.849 * Removing the pid file.
+13778:M 28 Jul 2022 13:42:52.849 # Redis is now ready to exit, bye bye...
+16243:C 28 Jul 2022 14:09:36.447 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+16243:C 28 Jul 2022 14:09:36.447 # Redis version=255.255.255, bits=64, commit=00000000, modified=0, pid=16243, just started
+16243:C 28 Jul 2022 14:09:36.447 # Configuration loaded
+16243:M 28 Jul 2022 14:09:36.448 * Increased maximum number of open files to 10032 (it was originally set to 1024).
+16243:M 28 Jul 2022 14:09:36.448 * monotonic clock: POSIX clock_gettime
+16243:M 28 Jul 2022 14:09:36.449 * Running mode=standalone, port=6379.
+16243:M 28 Jul 2022 14:09:36.449 # Server initialized
+16243:M 28 Jul 2022 14:09:36.449 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+16243:M 28 Jul 2022 14:09:36.456 * Creating AOF base file appendonly.aof.1.base.rdb on server start
+16243:M 28 Jul 2022 14:09:36.460 * Creating AOF incr file appendonly.aof.1.incr.aof on server start
+16243:M 28 Jul 2022 14:09:36.460 * Ready to accept connections
+16243:M 28 Jul 2022 14:10:44.677 # User requested shutdown...
+16243:M 28 Jul 2022 14:10:44.677 * Calling fsync() on the AOF file.
+16243:M 28 Jul 2022 14:10:44.679 * Saving the final RDB snapshot before exiting.
+16243:M 28 Jul 2022 14:10:44.684 * DB saved on disk
+16243:M 28 Jul 2022 14:10:44.684 * Removing the pid file.
+16243:M 28 Jul 2022 14:10:44.684 # Redis is now ready to exit, bye bye...
+16411:C 28 Jul 2022 14:28:48.761 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+16411:C 28 Jul 2022 14:28:48.761 # Redis version=255.255.255, bits=64, commit=00000000, modified=0, pid=16411, just started
+16411:C 28 Jul 2022 14:28:48.761 # Configuration loaded
+16411:M 28 Jul 2022 14:28:48.761 * Increased maximum number of open files to 10032 (it was originally set to 1024).
+16411:M 28 Jul 2022 14:28:48.761 * monotonic clock: POSIX clock_gettime
+16411:M 28 Jul 2022 14:28:48.762 * Running mode=standalone, port=6379.
+16411:M 28 Jul 2022 14:28:48.762 # Server initialized
+16411:M 28 Jul 2022 14:28:48.762 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+16411:M 28 Jul 2022 14:28:48.763 * Reading RDB base file on AOF loading...
+16411:M 28 Jul 2022 14:28:48.763 * Loading RDB produced by version 255.255.255
+16411:M 28 Jul 2022 14:28:48.763 * RDB age 1152 seconds
+16411:M 28 Jul 2022 14:28:48.763 * RDB memory usage when created 0.82 Mb
+16411:M 28 Jul 2022 14:28:48.763 * RDB is base AOF
+16411:M 28 Jul 2022 14:28:48.763 * Done loading RDB, keys loaded: 0, keys expired: 0.
+16411:M 28 Jul 2022 14:28:48.763 * DB loaded from base file appendonly.aof.1.base.rdb: 0.000 seconds
+16411:M 28 Jul 2022 14:28:48.763 * DB loaded from incr file appendonly.aof.1.incr.aof: 0.000 seconds
+16411:M 28 Jul 2022 14:28:48.763 * DB loaded from append only file: 0.000 seconds
+16411:M 28 Jul 2022 14:28:48.763 * Opening AOF incr file appendonly.aof.1.incr.aof on server start
+16411:M 28 Jul 2022 14:28:48.763 * Ready to accept connections
+16411:M 28 Jul 2022 14:43:49.086 * 1 changes in 900 seconds. Saving...
+16411:M 28 Jul 2022 14:43:49.086 * Background saving started by pid 17371
+17371:C 28 Jul 2022 14:43:49.094 * DB saved on disk
+17371:C 28 Jul 2022 14:43:49.095 * Fork CoW for RDB: current 0 MB, peak 0 MB, average 0 MB
+16411:M 28 Jul 2022 14:43:49.187 * Background saving terminated with success
+16411:M 28 Jul 2022 14:49:35.171 * 10 changes in 300 seconds. Saving...
+16411:M 28 Jul 2022 14:49:35.172 * Background saving started by pid 17614
+17614:C 28 Jul 2022 14:49:35.214 * DB saved on disk
+17614:C 28 Jul 2022 14:49:35.215 * Fork CoW for RDB: current 0 MB, peak 0 MB, average 0 MB
+16411:M 28 Jul 2022 14:49:35.273 * Background saving terminated with success
+16411:M 28 Jul 2022 15:54:47.626 # User requested shutdown...
+16411:M 28 Jul 2022 15:54:47.637 * Calling fsync() on the AOF file.
+16411:M 28 Jul 2022 15:54:47.639 * Saving the final RDB snapshot before exiting.
+16411:M 28 Jul 2022 15:54:47.647 * DB saved on disk
+16411:M 28 Jul 2022 15:54:47.647 * Removing the pid file.
+16411:M 28 Jul 2022 15:54:47.647 # Redis is now ready to exit, bye bye...
