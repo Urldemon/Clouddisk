@@ -67,6 +67,7 @@ void my_fdfs_upload_file(const char *conf_filename,const char *local_filename,ch
     int ret = pipe(fd);
     if(ret == -1){
         perror("pipe error");
+
         exit(-1);
     }
     // 2.创建子进程
@@ -88,4 +89,33 @@ void my_fdfs_upload_file(const char *conf_filename,const char *local_filename,ch
         // 回收子进程
         wait(NULL);
     }
+}
+
+int fdfs_delete_file(const char *conf_filename,const char *file_id)
+{
+	ConnectionInfo *pTrackerServer;
+	int result;
+	
+	if ((result=fdfs_client_init(conf_filename)) != 0)
+	{
+		return result;
+	}
+
+	pTrackerServer = tracker_get_connection();
+	if (pTrackerServer == NULL)
+	{
+		fdfs_client_destroy();
+		return errno != 0 ? errno : ECONNREFUSED;
+	}
+
+	if ((result=storage_delete_file1(pTrackerServer, NULL, file_id)) != 0)
+	{
+		printf("delete file fail, " \
+			"error no: %d, error info: %s\n", \
+			result, STRERROR(result));
+	}
+
+	tracker_close_connection_ex(pTrackerServer, true);
+	fdfs_client_destroy();
+	return result;
 }
