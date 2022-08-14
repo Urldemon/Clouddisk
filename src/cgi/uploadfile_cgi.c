@@ -187,7 +187,7 @@ int mysql_save_file(char *user, char *filename, char *md5,char *file_id, char *f
 
     // 2. 写入mysql数据
     // 2.1 开启事务
-    if(mysql_conn_query(my,"begin",strlen("begin"),NULL))
+    if(mysql_conn_query(my,"begin",strlen("begin"),NULL) != 0)
     {
         ret = -1;
         goto END;

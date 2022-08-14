@@ -8,5 +8,7 @@ int get_mysql_data(char *user,char *password,char *database);
 int get_conf_inet_value(char *obj,char *ip,char *port);
 int get_string_value(const char *str,const char *obj,char *value);
 
+int get_query_data(const char *query,const char *key,char *cmd);
 char *respost_code(char *token,char *ret);
+int verify_token(const char *user_name,const char *token);
 #endif

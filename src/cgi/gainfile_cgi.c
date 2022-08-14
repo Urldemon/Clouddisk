@@ -9,11 +9,11 @@
 #include "../../include/mysql_c_aip.h"
 #include "../../include/cJSON.h"
 #include "../../include/redis_c_api.h"
+#include "../../include/cfg.h"
 
 int gain_query_data(const char *query,const char *key,char *cmd);
 int get_json_count_info(char* user_name,char *token);
 int get_json_filelist_info(char *user_name,char *token,int *start,int *count);
-int verify_token(const char *user_name,const char *token);
 int get_count_data(const char *user_name,int *count);
 int get_user_file_list(const char *cmd,const char *user_name,int start,int count);
 void return_status(const char *retcode,int count);
@@ -35,7 +35,7 @@ int main()
             query = getenv("QUERY_STRING");
 
             // 获取url上的命令参数
-            ret = gain_query_data(query,"cmd",cmd);
+            ret = get_query_data(query,"cmd",cmd);
             if(ret < 0)goto END;
 
             char user_name[USER_LEN] = {0};
@@ -83,28 +83,6 @@ END:
     return 0;
 }
 
-int gain_query_data(const char *query,const char *key,char *cmd)
-{
-    char *index = NULL;
-    char *end = NULL;
-    index = strstr(query,key); 
-    if(index == NULL)
-    {
-        return -1;
-    }
-    index += strlen(key);       // 跳过cmd
-    ++index;                    // 跳过end 获得参数起始位置
-
-    end = strchr(index,'\0');
-    if(end == NULL)
-    {
-        return -1;
-    }
-    strncpy(cmd,index,end-index);
-    return 0;
-}
-
-
 int get_json_count_info(char* user_name,char *token)
 {
     int ret = 0;
@@ -144,32 +122,6 @@ int get_json_count_info(char* user_name,char *token)
 END:
     if(root != NULL)cJSON_Delete(root);
     return ret;
-}
-
-int verify_token(const char *user_name,const char *token)
-{
-    int ret = 0;
-    // 链接redis
-    redisContext *rd = redis_conn_init();
-    if(rd == NULL)return -1;
-
-    // 获取key指定的token
-    char buf[TOKEN_LEN] = {0};
-    if(redis_get_value(rd,user_name,buf) < 0)
-    {
-        ret = -1;
-        goto END;
-    }
-
-    // 判断是否一致
-    if(strcmp(token,buf) != 0)
-    {
-        ret = 1;
-        goto END;
-    }
-END:
-    redis_conn_free(rd);
-    return ret;         // -1 报错 0正确 1不正确
 }
 
 int get_count_data(const char *user_name,int *count)
@@ -362,6 +314,5 @@ void return_status(const char *retcode,int count)
         cJSON_Delete(root);
     }
 }
-
 //gcc -o gainfile_cgi gainfile_cgi.c ../cJSON.c ../cfg.c ../mysql_c_aip.c ../redis_c_api.c -I ../../include/ -lmysqlclient -lhiredis -lfcgi
 

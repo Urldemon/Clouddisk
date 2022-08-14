@@ -1,8 +1,10 @@
+#include <hiredis/read.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
 #include <hiredis/hiredis.h>
+#include "../include/redis_keys.h"
 #include "../include/redis_c_api.h"
 #include "../include/cfg.h"
 #include "../include/define.h"
@@ -64,3 +66,55 @@ int redis_get_value(redisContext *rd,const char *key,char *out)
     freeReplyObject(res);
     return 0;
 }
+
+
+/* *
+ * @brief 判断有序序列集中是否有成员
+ * 
+ * @param conn      redis链接
+ * @param key       zset表名
+ * @param member    zset成员名
+ *
+ * @returns 
+ *      0 不存在  1 存在  -1出错
+ * */
+int redis_zset_key_exist(redisContext *rd,const char *key,const char *member)
+{
+    int ret = 0;
+    redisReply *res = NULL;
+
+    res = redisCommand(rd,"zlexcount %s [%s [%s",key,member,member);
+    if(res->type != REDIS_REPLY_INTEGER)
+    {
+        ret = -1;
+        goto END;
+    }
+
+    ret = res->integer;
+END:
+    if(res != NULL)freeReplyObject(res);
+    return ret;
+}
+/* *
+ * @brief 向有序集合key添加数据
+ * 
+ * @param conn      redis链接
+ * @param key       zset表名
+ * @param score     集合组
+ * @param value     数据
+ *
+ * @returns 
+ *          成功 0  失败 -1
+ * */
+int redis_zset_add(redisContext *rd,const char *key,int score,const char *value)
+{
+    int ret = 0;
+    redisReply *res = NULL;
+
+    res = redisCommand(rd,"zadd %s %d %s",key,score,value);
+    if(res->integer != 1)ret = -1;
+
+    if(res != NULL)freeReplyObject(res);
+    return ret;
+}
+
