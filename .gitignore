@@ -11,6 +11,10 @@
 *.ilk
 *.map
 *.exp
+# redis aof rdb
+*.rdb
+*.aof
+*.aof.*
 
 # Precompiled Headers
 *.gch
