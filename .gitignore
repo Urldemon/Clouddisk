@@ -15,6 +15,7 @@
 *.rdb
 *.aof
 *.aof.*
+appendonlydir/
 
 # Precompiled Headers
 *.gch
