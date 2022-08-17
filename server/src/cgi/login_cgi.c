@@ -129,6 +129,7 @@ int main(){
         char *connlength = getenv("CONTENT_LENGTH"); 
         long connlen = 0;
         char token[SHA256_DIGEST_LENGTH] = {0};
+        char *out = NULL;
 
         if(connlength != NULL)
         {
@@ -162,16 +163,15 @@ int main(){
             }
         }else ret = -1;
 END:
-        char *out = NULL;
         if(ret == -1)       // 发生错误
         {
-            out = respost_code(NULL,"004");
+            out = respost_code("004",NULL,NULL);
         }else if(ret == 0){             // 登录成功
-            out = respost_code(token,"000");
+            out = respost_code("000","token",token);
         }else if(ret == 1){             // 
-            out = respost_code(NULL,"001");
+            out = respost_code("001",NULL,NULL);
         }else{                          // 密码错误
-            out = respost_code(NULL,"002");
+            out = respost_code("002",NULL,NULL);
         }
 
         if(out != NULL)

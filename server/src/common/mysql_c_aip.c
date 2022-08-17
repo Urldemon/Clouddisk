@@ -3,8 +3,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <mysql/mysql.h>
-#include "../include/define.h"
-#include "../include/cfg.h"
+#include "define.h"
+#include "cfg.h"
 #include "mysql_c_aip.h"
 
 MYSQL *mysql_conn_init()

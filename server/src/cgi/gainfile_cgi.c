@@ -5,17 +5,15 @@
 #include <string.h>
 #include "fcgi_stdio.h"
 #include "fcgi_config.h"
-#include "../../include/define.h"
-#include "../../include/mysql_c_aip.h"
-#include "../../include/cJSON.h"
-#include "../../include/redis_c_api.h"
-#include "../../include/cfg.h"
+#include "define.h"
+#include "mysql_c_aip.h"
+#include "cJSON.h"
+#include "redis_c_api.h"
+#include "cfg.h"
 
-int gain_query_data(const char *query,const char *key,char *cmd);
-int get_json_count_info(char* user_name,char *token);
-int get_json_filelist_info(char *user_name,char *token,int *start,int *count);
-int get_count_data(const char *user_name,int *count);
-int get_user_file_list(const char *cmd,const char *user_name,int start,int count);
+int get_json_data_info(char *user_name,char *token,int *start,int *count);
+int push_count_data(const char *user_name);
+int push_user_file_list(const char *cmd,const char *user_name,int start,int count);
 void return_status(const char *retcode,int count);
 
 int main()
@@ -40,122 +38,38 @@ int main()
 
             char user_name[USER_LEN] = {0};
             char token[TOKEN_LEN] = {0};
+            int start = 0;
             int count = 0;
 
+            // 获取json上的元素
             if(strcmp(cmd,"count") == 0)
-            {
-                // 获取json上的元素
-                ret = get_json_count_info(user_name,token);
-                if(ret == -1)goto END;
+                ret = get_json_data_info(user_name,token,NULL,NULL);
+            else 
+                ret = get_json_data_info(user_name,token,&start,&count);
 
-                // 检测登录状态
-                ret = verify_token(user_name,token);
-                if(ret != 0)goto END;
-                else if(ret == 1)return_status("102",0);
+            if(ret == -1)goto END;
 
-                // 获取count数据并向前段返回数据
-                ret = get_count_data(user_name,&count);
-                if(ret == -1)goto END;
+            // 检测登录状态
+            ret = verify_token(user_name,token);
+            if(ret != 0)goto END;
 
-                // 向前端输出
-                return_status("100",count);
-            }
+            if(strcmp(cmd,"count") == 0)
+                push_count_data(user_name);
             else 
             //获取用户文件信息 127.0.0.1:80/myfiles&cmd=normal
             //按下载量升序 127.0.0.1:80/myfiles?cmd=pvasc
             //按下载量降序127.0.0.1:80/myfiles?cmd=pvdesc
-            {
-                int start = 0;
-                // 获取json上的元素
-                ret = get_json_filelist_info(user_name,token,&start,&count);
-                if(ret == -1)goto END;
-                // 检测登录状态
-                ret = verify_token(user_name,token);
-                if(ret != 0)goto END;
-                // 获取文件信息列表
-                ret = get_user_file_list(cmd,user_name,start,count);
-            }
+                ret = push_user_file_list(cmd,user_name,start,count);      // 获取文件信息列表
         }else ret = -1;
 END:
-        if(ret == -1)return_status("104",0);
-        else if(ret == 1)return_status("102",0);
+        if(ret == -1)printf(respost_code("104",NULL,NULL));
+        else if(ret == 1)printf(respost_code("101",NULL,NULL));         
+        else if(ret == 2)printf(respost_code("102",NULL,NULL));         // 文件为空
     }
     return 0;
 }
 
-int get_json_count_info(char* user_name,char *token)
-{
-    int ret = 0;
-    char buf[4096] = {0};
-
-    int len = fread(buf,1,4096,stdin);
-    if(len <= 0)
-    {
-        ret = -1;
-        goto END;
-    }
-
-    // 将获取到的数据转发称 JSON对象
-    cJSON *root = cJSON_Parse(buf);
-    if(root == NULL)
-    {
-        ret = -1;
-        goto END;
-    }
-    
-    cJSON *obj = cJSON_GetObjectItem(root,"user_name");
-    if(obj == NULL)
-    {
-        ret = -1;
-        goto END;
-    }
-    strcpy(user_name,obj->valuestring);
-
-    obj = cJSON_GetObjectItem(root,"token");
-    if(obj == NULL)
-    {
-        ret = -1;
-        goto END;
-    }
-    strcpy(token,obj->valuestring);   
-
-END:
-    if(root != NULL)cJSON_Delete(root);
-    return ret;
-}
-
-int get_count_data(const char *user_name,int *count)
-{
-    int ret = 0;
-    char command[SQL_COM_LEN] = {0};
-    MYSQL_RES *res = NULL;    
-    MYSQL_ROW row;
-
-    MYSQL *my = mysql_conn_init();
-    if(my == NULL)return -1;
-
-    // 查询count数据并返回数据
-    sprintf(command,"select count from user_file_count where user='%s'",user_name); 
-    ret = mysql_query(my,command);
-    if(ret == -1)goto END;
-
-    res = mysql_store_result(my);
-    if(res == NULL)goto END;
-    
-    // 获取返回的数据
-    row = mysql_fetch_row(res);
-    if(row == NULL || row[0] == NULL)goto END;
-
-    // 转换字符
-    *count = atoi(row[0]);
-
-END:
-    if(res != NULL)mysql_free_result(res);
-    if(my != NULL)mysql_conn_close(my);
-    return ret;            
-}
-
-int get_json_filelist_info(char *user_name,char *token,int *start,int *count)
+int get_json_data_info(char *user_name,char *token,int *start,int *count)
 {
     int ret = 0;
     int len = 0;
@@ -191,28 +105,65 @@ int get_json_filelist_info(char *user_name,char *token,int *start,int *count)
     }
     strcpy(token,obj->valuestring);
 
-    obj = cJSON_GetObjectItem(root,"start");
-    if(obj == NULL)
+    if(start != NULL)
     {
-        ret = -1;
-        goto END;
+        obj = cJSON_GetObjectItem(root,"start");
+        if(obj == NULL)
+        {
+            ret = -1;
+            goto END;
+        }
+        *start = obj->valueint;
     }
-    *start = obj->valueint;
 
-    obj = cJSON_GetObjectItem(root,"count");
-    if(obj == NULL)
+    if(count != NULL)
     {
-        ret = -1;
-        goto END;
+        obj = cJSON_GetObjectItem(root,"count");
+        if(obj == NULL)
+        {
+            ret = -1;
+            goto END;
+        }
+        *count = obj->valueint;
     }
-    *count = obj->valueint;
 
 END:
     if(root != NULL)cJSON_Delete(root);
     return ret;
 }
 
-int get_user_file_list(const char *cmd,const char *user_name,int start,int count)
+
+int push_count_data(const char *user_name)
+{
+    int ret = 0;
+    char command[SQL_COM_LEN] = {0};
+    char tmp[256] = {0};
+    // 链接数据库
+    MYSQL *my = mysql_conn_init();
+    if(my == NULL)
+    {
+        ret = -1;
+        goto END;
+    }
+
+    // 查询用户数据
+    sprintf(command,"select count from user_file_count where user='%s'",user_name);
+    ret = mysql_result_one(my,command,strlen(command),tmp);
+    if(ret == -1)goto END;
+    else if(ret == 0)   // 存在
+        printf(respost_code("100","count",tmp)); 
+    else                // 不存在 
+    {
+        printf(respost_code("100","count","0")); 
+        ret = 0;
+    }
+
+END:
+    if(my != NULL)mysql_conn_close(my);
+    return ret;
+}
+
+int push_user_file_list(const char *cmd,const char *user_name,int start,int count)
 {
     int ret = 0;
     char command[SQL_COM_LEN] = {0};
@@ -250,10 +201,10 @@ int get_user_file_list(const char *cmd,const char *user_name,int start,int count
         goto END;
     }
     // 获取查询数据的长度
-    long len = mysql_num_fields(res);
-    if(len == 0)        // 没有结果
+    long len = mysql_num_rows(res);
+    if(len <= 0)        // 没有结果
     {
-        ret = 1;
+        ret = len == 0 ? 2 : -1;
         goto END;
     }
     
@@ -279,12 +230,13 @@ int get_user_file_list(const char *cmd,const char *user_name,int start,int count
         if(row[num] != NULL)
             cJSON_AddStringToObject(obj,"url",row[num++]);
         if(row[num] != NULL)
-            cJSON_AddNumberToObject(obj,"type",atoi(row[num++]));
+            cJSON_AddNumberToObject(obj,"size",atoi(row[num++]));
         if(row[num] != NULL)
             cJSON_AddStringToObject(obj,"type",row[num++]);
 
         cJSON_AddItemToArray(arry,obj);
     }
+    cJSON_AddStringToObject(root,"retcode","100");
     cJSON_AddItemToObject(root,"files",arry);
 
     out = cJSON_Print(root);
@@ -298,21 +250,6 @@ END:
     if(res != NULL)mysql_free_result(res);
     if(root != NULL)cJSON_Delete(root);
     return ret;
-}
-void return_status(const char *retcode,int count)
-{
-    cJSON *root = cJSON_CreateObject();
-    cJSON_AddStringToObject(root,"retcode",retcode);
-    cJSON_AddNumberToObject(root,"count",(double)count);
-    char *out = cJSON_Print(root);
-    if(out != NULL )
-    {
-        printf(out);
-        free(out);
-    }
-    if(root != NULL){
-        cJSON_Delete(root);
-    }
 }
 //gcc -o gainfile_cgi gainfile_cgi.c ../cJSON.c ../cfg.c ../mysql_c_aip.c ../redis_c_api.c -I ../../include/ -lmysqlclient -lhiredis -lfcgi
 

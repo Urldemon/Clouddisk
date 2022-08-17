@@ -230,16 +230,17 @@ int get_string_value(const char* str,const char *obj,char *value)
     return 0;
 }
 
-char *respost_code(char *token,char *ret)
+char *respost_code(const char *ret,const char *obj_name,const char *value)
 {
     cJSON *root_obj = cJSON_CreateObject();         // 创建一个对象
 
     cJSON_AddStringToObject(root_obj,"retcode",ret);    // 添加状态
-    if(token != NULL)cJSON_AddStringToObject(root_obj,"token",token);    // 添加token值
+    if(obj_name != NULL)cJSON_AddStringToObject(root_obj,obj_name,value);    // 添加token值
 
     char *out = cJSON_Print(root_obj);      // 生成json数据
 
     if(root_obj != NULL)cJSON_Delete(root_obj);
+
     if(out != NULL){
         return out;       // 输出数据
     }

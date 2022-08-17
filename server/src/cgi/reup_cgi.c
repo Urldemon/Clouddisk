@@ -5,12 +5,12 @@
 #include <fcntl.h>
 #include <string.h>
 #include <time.h>
-#include "../../include/define.h"
+#include "define.h"
 #include "fcgi_stdio.h"
 #include "fcgi_config.h"
-#include "../../include/cfg.h"
-#include "../../include/cJSON.h"
-#include "../../include/mysql_c_aip.h"
+#include "cfg.h"
+#include "cJSON.h"
+#include "mysql_c_aip.h"
 
 
 int get_json_data(char *user_name,char *nick_name,char *password,char *phone,char *email)
@@ -170,32 +170,27 @@ END:
 
         switch (ret) {
             case 0:
-                out = respost_code(NULL,"010"); 
+                printf(respost_code("010",NULL,NULL)); 
                 break;
             case 1:
-                out = respost_code(NULL,"011"); 
+                printf(respost_code("011",NULL,NULL)); 
                 break;
             case 2:
-                out = respost_code(NULL,"012"); 
+                printf(respost_code("012",NULL,NULL)); 
                 break;
             case 3:
-                out = respost_code(NULL,"013"); 
+                printf(respost_code("013",NULL,NULL)); 
                 break;
             case 4:
-                out = respost_code(NULL,"014"); 
+                printf(respost_code("014",NULL,NULL)); 
                 break;
             default:
-                out = respost_code(NULL,"015"); 
+                printf(respost_code("015",NULL,NULL)); 
                 break;
-        }
-        if(out != NULL)
-        {
-            printf(out);
-            free(out);
         }
     }
     return 0;
 }
 
-// gcc -o reup_cgi reup_cgi.c ../cfg.c ../cJSON.c ../mysql_c_aip.c -I ../../include/ -lfcgi -lmysqlclient
+// gcc -o reup_cgi reup_cgi.c ../cfg.c ../cJSON.c ../mysql_c_aip.c ../redis_c_api.c -I ../../include/ -lfcgi -lmysqlclient -lhiredis
 

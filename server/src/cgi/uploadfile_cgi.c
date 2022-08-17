@@ -7,10 +7,10 @@
 #include <time.h>
 #include <errno.h>
 #include <sys/stat.h>
-#include "fcgi_stdio.h"
+#include <fcgi_stdio.h>
 #include <fcgi_config.h>
 #include "cfg.h"
-#include "../../include/define.h"
+#include "define.h"
 #include "fdfs_c_api.h"
 #include "mysql_c_aip.h"
 
@@ -344,5 +344,6 @@ END:
     }   
     return 0;
 }
+//gcc -o uploadfile_cgi uploadfile_cgi.c ../cJSON.c ../cfg.c ../mysql_c_aip.c  ../fdfs_c_api.c ../redis_c_api.c  -I ../../include/  -I /usr/include/fastdfs -lfcgi -lfdfsclient -lmysqlclient -lhiredis
 
-// gcc -o uploadfile_cgi uploadfile_cgi.c ../cJSON.c ../cfg.c ../mysql_c_aip.c  ../fdfs_c_api.c  -I ../../include/  -I /usr/include/fastdfs -lfcgi -lfdfsclient -lmysqlclient
+
