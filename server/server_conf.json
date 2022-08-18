@@ -19,7 +19,7 @@
     },
     "fastdfs":
     {
-        "client_conf_path": "/home/hang/github/PanServer/conf/client.conf"
+        "client_conf_path": "~/github/PanServer/conf/client.conf"
     },
     "key":
     {
