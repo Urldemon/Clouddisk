@@ -8,7 +8,7 @@
 #include "aeskeyinstance.h"
 
 
-#define CONFFILE  "F:/project/CloudDiskClinet/conf/cfg.json"       // 存放配置信息的目录
+#define CONFFILE  "F:/project/Clouddisk/CloudDiskClinet/conf/cfg.json"       // 存放配置信息的目录
 #define FILETYPEDIR     "conf/fileType"                              // 存放文件类型图片目录
 
 #define USER_REG        "^[a-zA-Z\\d_@#-\*]\{3,16\}$"
@@ -45,10 +45,15 @@ public:
 
     QString getCode(QByteArray array);
     QString getConfvalue(QString title,QString key,QString path=CONFFILE);
+
     void writeWebInfo(QString ip,QString port,QString path=CONFFILE);
     void writeSgininInfo(QString user,QString pwd,bool isremeber,QString path=CONFFILE);
-    QString getStrSha256(QString str);
-    void moveToCenter(QWidget *tmp);
+
+    QString getStrSha256(QString str);                                  // 对数进行sha256加密
+
+    void moveToCenter(QWidget *tmp);                                    // 将软件剧中
+
+    void getFileTypeList();                                             // 初始化图片数据
 
 public:
     static QNetworkAccessManager* getNetManager();

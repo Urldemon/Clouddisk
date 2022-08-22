@@ -23,8 +23,12 @@ SOURCES += \
     login.cpp \
     main.cpp \
     mainwindow.cpp \
+    myfile.cpp \
+    ranking.cpp \
     selfwidget/buttongroup.cpp \
-    selfwidget/titlewidget.cpp
+    selfwidget/titlewidget.cpp \
+    sharefile.cpp \
+    transform.cpp
 
 HEADERS += \
     aesni/aesni-enc-cbc.h \
@@ -36,14 +40,22 @@ HEADERS += \
     common/qaesencryption.h \
     login.h \
     mainwindow.h \
+    myfile.h \
+    ranking.h \
     selfwidget/buttongroup.h \
-    selfwidget/titlewidget.h
+    selfwidget/titlewidget.h \
+    sharefile.h \
+    transform.h
 
 FORMS += \
     login.ui \
     mainwindow.ui \
+    myfile.ui \
+    ranking.ui \
     selfwidget/buttongroup.ui \
-    selfwidget/titlewidget.ui
+    selfwidget/titlewidget.ui \
+    sharefile.ui \
+    transform.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

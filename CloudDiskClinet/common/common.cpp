@@ -3,6 +3,8 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QDesktopWidget>
+#include <QApplication>
 #include <QFile>
 #pragma execution_character_set("utf-8")
 
@@ -207,6 +209,13 @@ QString Common::getStrSha256(QString str)
 }
 
 void Common::moveToCenter(QWidget *tmp)
+{
+    QDesktopWidget* desktop = QApplication::desktop();   // 获取屏幕中央
+
+    tmp->move((desktop->width() - tmp->width())/2,(desktop->height() - tmp->height())/2);
+}
+
+void Common::getFileTypeList()
 {
 
 }

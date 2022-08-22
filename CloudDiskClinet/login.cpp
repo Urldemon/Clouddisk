@@ -12,6 +12,7 @@
 #include "common/common.h"
 #pragma execution_character_set("utf-8")
 
+#define DEBUG
 
 Login::Login(QWidget *parent) :
     QDialog(parent),
@@ -104,11 +105,18 @@ Login::Login(QWidget *parent) :
     // =========主页面跳转登录=====
     connect(m_mainwin,&MainWindow::changeUser,[=]()
     {
+        // 隐藏操作界面
         m_mainwin->hide();
+        // 显示登录界面
         this->show();
+        // 将界面居中
+        m_common.moveToCenter(this);
     });
-
+    // 读取配置信息
     readCfg();
+
+    // 加载图片信息 - 显示文件列表的时候使用，在此初始化
+    m_common.getFileTypeList();
 }
 
 Login::~Login()
@@ -219,6 +227,7 @@ void Login::on_sginin_btn_clicked()
     QNetworkRequest request;
     // 设置请求头
     QString url = QString("http://%1:%2/login").arg(serverip).arg(serverport);
+    request.setUrl(QUrl(url));
     // 设置请求行
     request.setHeader(QNetworkRequest::ContentTypeHeader,QVariant("application/json"));
     request.setHeader(QNetworkRequest::ContentLengthHeader,QVariant(array.size()));
@@ -226,41 +235,45 @@ void Login::on_sginin_btn_clicked()
     QNetworkReply *reply = m_manager->post(request,array);
 
     // 接收服务器发送回来的相应·
-//    connect(reply,&QNetworkReply::finished,[=]()
-//    {
-//        // 出错
-//        if(reply->error() != QNetworkReply::NoError)
-//        {
-//            qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << reply->errorString();
-//            return ;
-//        }
-
-//        // 读取返回的数据
-//        QByteArray json = reply->readAll();
-//        QStringList code = getSgininStatus(json);
-//        if(code.at(0) == "000")
-//        {
-//            qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << "登录成功！";
-
-//            //
-//            LoginInfoInstance *ptr = LoginInfoInstance::getInstance();
-//            ptr->setLoginInfo(user,serverip,serverport,code.at(1));
-//            qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << ptr->getUser().toUtf8().data() << "," << ptr->getIp() << "," << ptr->getPort() << code.at(1);
-//            // 隐藏当前窗口
-//            this->hide();
-//            // 跳转到主界面上
-//            m_mainwin->showMainWindos();
-//        }
-//        else
-//        {
-//            ui->sginin_status->setText("登录失败，用户名或密码错误！");
-//        }
-//        reply->deleteLater();
-//    });
+#ifdef DEBUG
     // 隐藏当前窗口
     this->hide();
     // 跳转到主界面上
     m_mainwin->showMainWindos();
+
+#else
+    connect(reply,&QNetworkReply::finished,[=]()
+    {
+        // 出错
+        if(reply->error() != QNetworkReply::NoError)
+        {
+            qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << reply->errorString();
+            return ;
+        }
+
+        // 读取返回的数据
+        QByteArray json = reply->readAll();
+        QStringList code = getSgininStatus(json);
+        if(code.at(0) == "000")
+        {
+            qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << "登录成功！";
+
+            //
+            LoginInfoInstance *ptr = LoginInfoInstance::getInstance();
+            ptr->setLoginInfo(user,serverip,serverport,code.at(1));
+            qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << ptr->getUser().toUtf8().data() << "," << ptr->getIp() << "," << ptr->getPort() << code.at(1);
+            // 隐藏当前窗口
+            this->hide();
+            // 跳转到主界面上
+            m_mainwin->showMainWindos();
+        }
+        else
+        {
+            ui->sginin_status->setText("登录失败，用户名或密码错误！");
+        }
+        reply->deleteLater();
+    });
+#endif
 }
 
 void Login::on_resgin_confirm_btn_clicked()
@@ -329,6 +342,7 @@ void Login::on_resgin_confirm_btn_clicked()
     QNetworkRequest request;
     // 请求行
     QString url = QString("http://%1:%2/reup").arg(ui->server_ip->text()).arg(ui->server_port->text());
+    request.setUrl(QUrl(url));
     // 设置请求头
     request.setHeader(QNetworkRequest::ContentTypeHeader,QVariant("application/json"));     // 请求类型
     request.setHeader(QNetworkRequest::ContentLengthHeader,QVariant(array.size()));          // 数据大小

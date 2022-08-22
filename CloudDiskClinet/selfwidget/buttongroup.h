@@ -5,12 +5,12 @@
 #include <QMap>
 #include <QSignalMapper>
 #include <QToolButton>
+
 namespace Ui {
 class ButtonGroup;
 }
 
-
-enum class Page{MYFILE, SHARE, TRANKING, TRANSFER, SWITCHUSR};
+enum Page{USERDATE, MYFILE, SHARE, TRANKING, TRANSFER, SWITCHUSR};
 
 class ButtonGroup : public QWidget
 {
@@ -22,10 +22,11 @@ public:
 
     void defaulfPage();
 signals:
+    void sigUserDate();
     void sigMyFile();
     void sigShareFile();
-    void sigDownload();
-    void sigTransform();
+    void sigRanking();
+    void sigTransForm();
     void sigSwitchUser();
     void closeWindow();
     void minWindow();

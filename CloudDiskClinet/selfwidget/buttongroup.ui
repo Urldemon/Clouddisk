@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>801</width>
-    <height>72</height>
+    <width>862</width>
+    <height>128</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,21 +33,21 @@
        <number>6</number>
       </property>
       <property name="leftMargin">
-       <number>0</number>
+       <number>9</number>
       </property>
       <property name="topMargin">
-       <number>0</number>
+       <number>9</number>
       </property>
       <property name="rightMargin">
-       <number>0</number>
+       <number>9</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
+       <number>9</number>
       </property>
       <item>
        <widget class="QToolButton" name="loginuser">
         <property name="text">
-         <string>...</string>
+         <string>用户信息</string>
         </property>
         <property name="icon">
          <iconset resource="../resources.qrc">
@@ -58,6 +58,9 @@
           <width>50</width>
           <height>50</height>
          </size>
+        </property>
+        <property name="toolButtonStyle">
+         <enum>Qt::ToolButtonIconOnly</enum>
         </property>
         <property name="autoRaise">
          <bool>true</bool>
@@ -111,7 +114,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="download">
+       <widget class="QToolButton" name="ranking">
         <property name="text">
          <string>下载榜单</string>
         </property>

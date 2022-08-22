@@ -1,8 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QDesktopWidget>
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -32,9 +30,7 @@ void MainWindow::showMainWindos()
     // 输出界面
     this->show();
     // 将显示窗口挪到桌面中央
-    QDesktopWidget* desktop = QApplication::desktop();   // 获取屏幕中央
-
-    this->move((desktop->width() - this->width())/2,(desktop->height()-this->height())/2);
+    m_common.moveToCenter(this);
 
     // 设置为默认页面
     ui->btn_group->defaulfPage();
@@ -65,6 +61,12 @@ void MainWindow::managerSignals()
         }
     });
 
+    // 用户信息
+    connect(ui->btn_group,&ButtonGroup::sigUserDate,[=]()
+    {
+        ui->stackedWidget->setCurrentWidget(ui->userdate_page);
+    });
+
     // 我的文件
     connect(ui->btn_group, &ButtonGroup::sigMyFile, [=]()
     {
@@ -78,14 +80,15 @@ void MainWindow::managerSignals()
         // 刷新分享列表
     });
     // 下载榜
-    connect(ui->btn_group, &ButtonGroup::sigDownload, [=]()
+    connect(ui->btn_group, &ButtonGroup::sigRanking, [=]()
     {
         ui->stackedWidget->setCurrentWidget(ui->ranking_page);
         // 刷新下载榜列表
+        ui->ranking_page->refreshFiles();
 
     });
     // 传输列表
-    connect(ui->btn_group, &ButtonGroup::sigTransform, [=]()
+    connect(ui->btn_group, &ButtonGroup::sigTransForm, [=]()
     {
         ui->stackedWidget->setCurrentWidget(ui->transfer_page);
     });
