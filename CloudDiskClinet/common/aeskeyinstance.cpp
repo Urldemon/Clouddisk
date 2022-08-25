@@ -1,10 +1,14 @@
-#include "common/aeskeyinstance.h"
+#include "aeskeyinstance.h"
+#include "common.h"
 #include <QDebug>
 #include <QCryptographicHash>
 #pragma execution_character_set("utf-8")
 
 #define HASHKEY "1234567887654321"
 #define HASHIVE "0000000000000000"
+
+//static类的析构函数在main()退出后调用
+AesKeyInstance::Garbo AesKeyInstance::garbo; //静态数据成员，类中声明，类外定义
 
 AesKeyInstance* AesKeyInstance::spyobj = new AesKeyInstance;
 
@@ -34,7 +38,7 @@ void AesKeyInstance::destroy()
         delete AesKeyInstance::spyobj;
         AesKeyInstance::spyobj = nullptr;
     }
-    qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << "spyobj delete";
+    cout << "spyobj delete";
 }
 
 QByteArray AesKeyInstance::encode(QByteArray input8bit)

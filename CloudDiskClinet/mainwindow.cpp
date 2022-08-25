@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include "transform.h"
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -97,6 +97,30 @@ void MainWindow::managerSignals()
     {
         qDebug() << "bye bye...";
         showLogin();
+    });
+
+    // 登录出错重新登录
+    connect(ui->myfiles_page,&MyFile::loginAgainSignal,[=]()
+    {
+        qDebug() << "bye bye...";
+        showLogin();
+    });
+
+    // stack窗口切换
+    // 下载操作
+    connect(ui->myfiles_page,&MyFile::gotoTransfer,[=](TransferStatus status)
+    {
+        ui->btn_group->slotButtonClick(Page::TRANSFER);
+
+//        ui->stackedWidget->setCurrentWidget(ui->transfer_page);   // 按钮没有发生变化
+        if(status == TransferStatus::Uplaod)
+        {
+             ui->transfer_page->showUpload();
+        }
+        else if(status == TransferStatus::Download)
+        {
+            ui->transfer_page->showDownload();
+        }
     });
 
 }

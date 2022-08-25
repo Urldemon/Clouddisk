@@ -27,7 +27,7 @@ ButtonGroup::ButtonGroup(QWidget *parent) :
     m_pages.insert(Page::USERDATE,ui->loginuser->text());
     m_pages.insert(Page::MYFILE, ui->myfile->text());
     m_pages.insert(Page::SHARE, ui->sharefile->text());
-    m_pages.insert(Page::TRANKING, ui->ranking->text());
+    m_pages.insert(Page::TRANKING , ui->ranking->text());
     m_pages.insert(Page::TRANSFER, ui->transform->text());
     m_pages.insert(Page::SWITCHUSR, ui->switchuser->text());
 

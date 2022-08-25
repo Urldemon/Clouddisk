@@ -5,11 +5,16 @@
 #include <QObject>
 #include <QListWidgetItem>
 #include <QNetworkAccessManager>
+#include <QCoreApplication>
 #include "aeskeyinstance.h"
 
 
-#define CONFFILE  "F:/project/Clouddisk/CloudDiskClinet/conf/cfg.json"       // 存放配置信息的目录
-#define FILETYPEDIR     "conf/fileType"                              // 存放文件类型图片目录
+#define CONFFILE        "conf/cfg.json"       // 存放配置信息的目录
+#define FILETYPEDIR     "conf/fileType/"                                     // 存放文件类型图片目录
+#define RECORDDIR       "conf/record/"                                      // 用户文件上传下载记录
+
+#define cout  qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]"
+
 
 #define USER_REG        "^[a-zA-Z\\d_@#-\*]\{3,16\}$"
 #define PASSWD_REG      "^[a-zA-Z\\d_@#-\*]\{6,18\}$"
@@ -44,19 +49,30 @@ public:
     ~Common();
 
     QString getCode(QByteArray array);
-    QString getConfvalue(QString title,QString key,QString path=CONFFILE);
+    QString getConfvalue(QString title,QString key,QString path= CONFFILE);
 
-    void writeWebInfo(QString ip,QString port,QString path=CONFFILE);
-    void writeSgininInfo(QString user,QString pwd,bool isremeber,QString path=CONFFILE);
+    QByteArray setGetCountjson(QString user,QString token);                                       // 生成认证登录信息
+
+    void writeWebInfo(QString ip,QString port,QString path= CONFFILE);
+    void writeSgininInfo(QString user,QString pwd,bool isremeber,QString path= CONFFILE);
+
+    void writeRecord(QString user, QString filename, QString code, QString path = RECORDDIR);  // 将传输数据写入磁盘
 
     QString getStrSha256(QString str);                                  // 对数进行sha256加密
+
+    QString getFileMd5(QString path);                                   // 生成文件md5值
+
+    QString getBoundary();                                              // 生成文件传输所用边界
 
     void moveToCenter(QWidget *tmp);                                    // 将软件剧中
 
     void getFileTypeList();                                             // 初始化图片数据
 
+
+
 public:
     static QNetworkAccessManager* getNetManager();
+
     static AesKeyInstance* getAesSpy();
 private:
 

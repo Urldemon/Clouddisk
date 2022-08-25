@@ -20,12 +20,16 @@ SOURCES += \
     common/common.cpp \
     common/logininfoinstance.cpp \
     common/qaesencryption.cpp \
+    common/uploadlayout.cpp \
+    common/uploadtask.cpp \
     login.cpp \
     main.cpp \
     mainwindow.cpp \
     myfile.cpp \
     ranking.cpp \
     selfwidget/buttongroup.cpp \
+    selfwidget/dataprogress.cpp \
+    selfwidget/mymenu.cpp \
     selfwidget/titlewidget.cpp \
     sharefile.cpp \
     transform.cpp
@@ -38,11 +42,15 @@ HEADERS += \
     common/common.h \
     common/logininfoinstance.h \
     common/qaesencryption.h \
+    common/uploadlayout.h \
+    common/uploadtask.h \
     login.h \
     mainwindow.h \
     myfile.h \
     ranking.h \
     selfwidget/buttongroup.h \
+    selfwidget/dataprogress.h \
+    selfwidget/mymenu.h \
     selfwidget/titlewidget.h \
     sharefile.h \
     transform.h
@@ -53,6 +61,7 @@ FORMS += \
     myfile.ui \
     ranking.ui \
     selfwidget/buttongroup.ui \
+    selfwidget/dataprogress.ui \
     selfwidget/titlewidget.ui \
     sharefile.ui \
     transform.ui

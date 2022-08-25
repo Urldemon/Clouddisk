@@ -1,8 +1,12 @@
 #include "logininfoinstance.h"
+#include "common.h"
 #include <QDebug>
 #pragma execution_character_set("utf-8")
 
 LoginInfoInstance* LoginInfoInstance::instance = new LoginInfoInstance;
+
+//static类的析构函数在main()退出后调用
+LoginInfoInstance::Garbo LoginInfoInstance::garbo; //静态数据成员，类中声明，类外定义
 
 LoginInfoInstance *LoginInfoInstance::getInstance()
 {
@@ -15,7 +19,7 @@ void LoginInfoInstance::destroy()
     {
         delete LoginInfoInstance::instance;
         LoginInfoInstance::instance = nullptr;
-        qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << "instance is delete";
+        cout << "instance is delete";
     }
 }
 

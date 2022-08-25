@@ -21,15 +21,14 @@ private:
     AesKeyInstance();
 
     class Garbo //设置为私有防止外界访问
+    {
+        public:
+            ~Garbo()//实际去析构new的单例对象
             {
-                public:
-                    ~Garbo()//实际去析构new的单例对象
-                    {
-                        AesKeyInstance::destroy();
-                    }
-            };
-
-     static Garbo garbo; //静态私有的嵌套类对象,防止被外界访问
+                AesKeyInstance::destroy();
+            }
+    };
+    static Garbo garbo; //静态私有的嵌套类对象,防止被外界访问
 
     static AesKeyInstance* spyobj;
 

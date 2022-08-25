@@ -92,7 +92,7 @@ void Ranking::refreshFiles()
     QNetworkReply* reply = m_manager->get(QNetworkRequest(QUrl(url)));
     if(reply == nullptr)
     {
-        qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << "reply == nullptr";
+        cout << "reply == nullptr";
         reply->deleteLater();
         return;
     }
@@ -101,7 +101,7 @@ void Ranking::refreshFiles()
     {
         if(reply->error() != QNetworkReply::NoError)
         {
-            qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << reply->errorString();
+            cout << reply->errorString();
             reply->deleteLater();
             return;
         }
@@ -132,7 +132,7 @@ void Ranking::getUserFileList()
     // 遍历数目，结束条件处理
     if(m_userFilesCount <= 0) // 结束条件，这个条件很重要，函数递归的结束条件
     {
-         qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << "获取共享文件列表条件结束";
+         cout << "获取共享文件列表条件结束";
          // 更新排行版列表
          refreshList();
 
@@ -156,7 +156,7 @@ void Ranking::getUserFileList()
     QNetworkReply *reply = m_manager->post(request,data);
     if(reply == NULL)
     {
-        qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << "reply == NULL";
+        cout << "reply == NULL";
         return;
     }
 
@@ -164,7 +164,7 @@ void Ranking::getUserFileList()
     {
         if(reply->error() != QNetworkReply::NoError)
         {
-            qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << reply->errorString();
+            cout << reply->errorString();
             reply->deleteLater();
             return ;
         }
@@ -175,7 +175,7 @@ void Ranking::getUserFileList()
         // 不是错误码处理文件列表json信息
         if(m_common.getCode(array) == "104")
         {
-           qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << array.data();
+           cout << array.data();
            getFileJsonInfo(array);
 
            // 继续获取共享文件列表   =====-===--==
@@ -195,7 +195,7 @@ void Ranking::getFileJsonInfo(QByteArray data)
     {
         if(doc.isNull() || doc.isEmpty())
         {
-            qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << "doc.isNull() || doc.isEmpty()";
+            cout << "doc.isNull() || doc.isEmpty()";
             return;
         }
         if(doc.isObject())
@@ -211,7 +211,7 @@ void Ranking::getFileJsonInfo(QByteArray data)
 
                 long size = array.size();
 
-                qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << "file:" << size;
+                cout << "file:" << size;
 
                 for(auto val:array)
                 {
@@ -227,12 +227,12 @@ void Ranking::getFileJsonInfo(QByteArray data)
                 }
             }
             else
-                qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << "recode 104";
+                cout << "recode 104";
 
         }
     }
     else
-        qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << "err=" << error.errorString();
+        cout << "err=" << error.errorString();
 }
 
 void Ranking::refreshList()
@@ -293,7 +293,7 @@ QByteArray Ranking::setFileListJson(int start, int count)
     QJsonDocument jsondocument = QJsonDocument::fromVariant(tmp);
     if(jsondocument.isNull() == true)
     {
-        qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << "jsonDocument.isNull()";
+        cout << "jsonDocument.isNull()";
         return "";
     }
     return jsondocument.toJson();

@@ -133,7 +133,7 @@ QByteArray Login::SetSgininJson(QString user, QString pwd)
     QJsonDocument jsonDocument = QJsonDocument::fromVariant(loginArray);
     if(jsonDocument.isNull())
     {
-         qDebug() << "[ " << __FILE__ << ":"  << __LINE__ << " ] " << " jsonDocument is NULL ";
+         cout << " jsonDocument is NULL ";
          return "";
     }
     return jsonDocument.toJson();
@@ -151,7 +151,7 @@ QByteArray Login::SetResginJson(QString user, QString nickname, QString pwd, QSt
     QJsonDocument jsonDpcument = QJsonDocument::fromVariant(resginArray);
     if(jsonDpcument.isNull())
     {
-        qDebug() << "[ " << __FILE__ << ":"  << __LINE__ << " ] " << " jsonDocument is NULL ";
+        cout << " jsonDocument is NULL ";
         return "";
     }
     return jsonDpcument.toJson();
@@ -167,7 +167,7 @@ QStringList Login::getSgininStatus(QByteArray json)
     {
         if(doc.isNull() || doc.isEmpty())
         {
-            qDebug() << "[ " << __FILE__ << ":"  << __LINE__ << " ] " << "doc.isNull() || doc.isEmpty()";
+            cout << "doc.isNull() || doc.isEmpty()";
             return list;
         }
         if(doc.isObject())
@@ -181,7 +181,7 @@ QStringList Login::getSgininStatus(QByteArray json)
     }
     else
     {
-        qDebug() << "[ " << __FILE__ << ":"  << __LINE__ << " ] " << error.errorString();
+        cout << error.errorString();
     }
     return list;
 }
@@ -221,7 +221,7 @@ void Login::on_sginin_btn_clicked()
     m_common.writeSgininInfo(user,pwd,ui->rember_pwd->isChecked());
     // 将数据打包成json格式
     QByteArray array = SetSgininJson(user,pwd);
-    qDebug() << "sginin json data "<< array;
+    cout << "sginin json data "<< array;
 
     //
     QNetworkRequest request;
@@ -241,13 +241,17 @@ void Login::on_sginin_btn_clicked()
     // 跳转到主界面上
     m_mainwin->showMainWindos();
 
+
+    LoginInfoInstance *ptr = LoginInfoInstance::getInstance();
+    ptr->setLoginInfo(user,serverip,serverport,"sdasdasdasd");
+
 #else
     connect(reply,&QNetworkReply::finished,[=]()
     {
         // 出错
         if(reply->error() != QNetworkReply::NoError)
         {
-            qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << reply->errorString();
+            cout << reply->errorString();
             return ;
         }
 
@@ -256,12 +260,12 @@ void Login::on_sginin_btn_clicked()
         QStringList code = getSgininStatus(json);
         if(code.at(0) == "000")
         {
-            qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << "登录成功！";
+            cout << "登录成功！";
 
             //
             LoginInfoInstance *ptr = LoginInfoInstance::getInstance();
             ptr->setLoginInfo(user,serverip,serverport,code.at(1));
-            qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]" << ptr->getUser().toUtf8().data() << "," << ptr->getIp() << "," << ptr->getPort() << code.at(1);
+            cout << ptr->getUser().toUtf8().data() << "," << ptr->getIp() << "," << ptr->getPort() << code.at(1);
             // 隐藏当前窗口
             this->hide();
             // 跳转到主界面上
@@ -480,6 +484,6 @@ void Login::paintEvent(QPaintEvent *event)
 {
     // 给窗口画背景图
     QPainter p(this);
-    QPixmap pixmap(":/image/login_bk.jpg");
+    QPixmap pixmap(":/image/title_bk.jpg");
     p.drawPixmap(0,0,this->width(),this->height(),pixmap);
 }
