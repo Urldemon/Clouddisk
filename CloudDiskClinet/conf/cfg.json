@@ -1,0 +1,14 @@
+{
+    "login": {
+        "pwd": "riTSFrhtEaXJWm3n+HL7Wg==",
+        "remember": "yes",
+        "user": "qDtreC7Hotpa+5Sbsf3S0w=="
+    },
+    "server": {
+        "ip": "192.168.2.108",
+        "port": "80"
+    },
+    "type_path": {
+        "path": "F:/project/CloudDiskClinet/conf/cfg.json"
+    }
+}
