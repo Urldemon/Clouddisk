@@ -7,6 +7,7 @@
 #include <fcgi_config.h>
 #include <openssl/sha.h>
 #include <openssl/aes.h>
+#include <wchar.h>
 #include "define.h"
 #include "cfg.h"
 #include "mysql_c_aip.h"
@@ -98,6 +99,7 @@ int set_token(char *user_name,char *token)
     // sha256加密
     SHA256_CTX ctx;
     SHA256_Init(&ctx);
+
     // 添加数据
     SHA256_Update(&ctx,base64,strlen(base64));
     // 加密
@@ -163,16 +165,14 @@ int main(){
             }
         }else ret = -1;
 END:
-        if(ret == -1)       // 发生错误
+        if(ret == 0)       // 登录成功
         {
-            out = respost_code("004",NULL,NULL);
-        }else if(ret == 0){             // 登录成功
             out = respost_code("000","token",token);
-        }else if(ret == 1){             // 
-            out = respost_code("001",NULL,NULL);
-        }else{                          // 密码错误
-            out = respost_code("002",NULL,NULL);
         }
+        else
+        {             // 出错
+            out = respost_code("404",NULL,NULL);
+        } 
 
         if(out != NULL)
         {

@@ -269,28 +269,24 @@ END:
 
     
 int main(){
-    // 1. 初始化数据
-    char user[USER_LEN] = {0};
-    char filename[FILE_NAME_LEN] = {0};
-    char md5[MD5_LEN] = {0};
-    long size = 0;
-    char file_id[FILE_ID_LEN] = {0};
-    char file_id_url[URL_LEN] = {0};
-
     // 开始流程
     while(FCGI_Accept() >= 0)
     {
+        // 1. 初始化数据
         int ret = 0;
+        char user[USER_LEN] = {0};
+        char filename[FILE_NAME_LEN] = {0};
+        char md5[MD5_LEN] = {0};
+        long size = 0;
+        char file_id[FILE_ID_LEN] = {0};
+        char file_id_url[URL_LEN] = {0};
         // 获取请求头中de CONTENT_TYPE长度
         char *conlength= getenv("CONTENT_LENGTH"); 
-        long conlen = 0;
-        if(conlength != NULL)
-        {
-            conlen= atoi(conlength);
-        }
+
         printf("Content-Type: text/html;charset=utf-8;\r\n\r\n");
 
-        if(conlen > 0){
+        if(conlength != NULL && atoi(conlength) > 0)
+        {
             // 读取并存储数据
             if(recv_save_file(user,filename,md5,&size) == -1)
             {
@@ -326,21 +322,8 @@ int main(){
         }else ret = -1;
 
 END:
-        if(ret < 0){
-            printf("传输出错！\n");
-        }else{
-            // 向客户端发送响应信息
-            printf("user:%s,filename:%s,md5:%s,size:%ld -> filid : %s\n",user,filename,md5,size,file_id_url);
-            printf("传输完成。。。。\n");
-        }
-
-        // 清0数据
-        bzero(user,USER_LEN);
-        bzero(filename,FILE_NAME_LEN);
-        bzero(md5,MD5_LEN);
-        bzero(file_id,FILE_ID_LEN);
-        bzero(file_id_url,URL_LEN);
-        size = 0;
+        if(ret == 0)printf(respost_code("100",NULL,NULL));
+        else printf(respost_code("104",NULL,NULL));
     }   
     return 0;
 }

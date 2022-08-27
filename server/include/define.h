@@ -11,7 +11,7 @@
 #define DATABASE_LEN 256
 #define FILE_NAME_LEN 256
 #define MD5_LEN 256
-#define PASSWORD_LEN 256
+#define PASSWORD_LEN 2048
 #define TEMP_BUF_MAX_LEN 512
 #define FILE_ID_LEN 512 
 #define URL_LEN 512

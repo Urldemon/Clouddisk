@@ -72,7 +72,7 @@ int main()
             else if(strcmp(cmd,"pvdesc") == 0)           // 获取排序列表从start开始的后count个
                 ret = push_file_ranking_pv(start,count);  
             else ret = -1;
-        } 
+        }else ret = -1; 
 
 END:
         if(ret == -1)printf(respost_code("104",NULL,NULL));      // 出错

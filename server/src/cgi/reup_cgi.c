@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <time.h>
+#include <wchar.h>
 #include "define.h"
 #include "fcgi_stdio.h"
 #include "fcgi_config.h"
@@ -128,7 +129,7 @@ int user_register(const char *user_name,const char *nick_name,const char *passwo
     memset(command,0,sizeof(command));
     sprintf(command,"insert into user_info (user_name,nick_name,password,phone,email,create_time)values('%s','%s','%s','%s','%s','%s')",user_name,nick_name,password,phone,email,create_time);
 
-    ret = mysql_conn_query(my,command,strlen(command),NULL);
+   ret = mysql_conn_query(my,command,(long)strlen(command),NULL);
 END:
     if(my != NULL)mysql_conn_close(my);
     return ret;
@@ -170,22 +171,22 @@ END:
 
         switch (ret) {
             case 0:
-                printf(respost_code("010",NULL,NULL)); 
+                printf(respost_code("002",NULL,NULL)); 
                 break;
             case 1:
-                printf(respost_code("011",NULL,NULL)); 
+                printf(respost_code("003",NULL,NULL)); 
                 break;
             case 2:
-                printf(respost_code("012",NULL,NULL)); 
+                printf(respost_code("004",NULL,NULL)); 
                 break;
             case 3:
-                printf(respost_code("013",NULL,NULL)); 
+                printf(respost_code("005",NULL,NULL)); 
                 break;
             case 4:
-                printf(respost_code("014",NULL,NULL)); 
+                printf(respost_code("006",NULL,NULL)); 
                 break;
             default:
-                printf(respost_code("015",NULL,NULL)); 
+                printf(respost_code("404",NULL,NULL)); 
                 break;
         }
     }

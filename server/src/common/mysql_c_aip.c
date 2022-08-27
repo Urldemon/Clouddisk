@@ -41,7 +41,7 @@ MYSQL *mysql_conn_init()
     return mq;
 }
 
-int mysql_conn_query(MYSQL *my,const char *command,int command_size,MYSQL_RES *ret_data)
+int mysql_conn_query(MYSQL *my,const char *command,long command_size,MYSQL_RES *ret_data)
 {
     int ret = 0;
     if(my == NULL || command == NULL || command_size == 0)return -1;
