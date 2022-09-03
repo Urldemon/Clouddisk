@@ -1,6 +1,8 @@
 #ifndef LOGININFOINSTANCE_H
 #define LOGININFOINSTANCE_H
+#if _MSC_VER >=1600
 #pragma execution_character_set("utf-8")
+#endif
 #include <QString>
 
 // 单例模式

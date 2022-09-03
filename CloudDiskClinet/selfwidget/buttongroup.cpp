@@ -1,5 +1,9 @@
 #include "buttongroup.h"
 #include "ui_buttongroup.h"
+#if _MSC_VER >=1600
+#pragma execution_character_set("utf-8")
+#endif
+
 
 #include <QMouseEvent>
 #include <QDebug>
@@ -96,7 +100,7 @@ void ButtonGroup::slotButtonClick(Page cur)
 
 void ButtonGroup::slotButtonClick(QString text)
 {
-    qDebug() << "============" << text ;
+//    qDebug() << "============" << text ;
     // 获取按钮对应page
     QToolButton* btn = m_btns[text];
 

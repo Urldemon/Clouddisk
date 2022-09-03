@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>482</width>
-    <height>371</height>
+    <width>680</width>
+    <height>450</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -80,7 +80,6 @@
                    <font>
                     <family>微软雅黑</family>
                     <pointsize>20</pointsize>
-                    <weight>75</weight>
                     <bold>true</bold>
                    </font>
                   </property>
@@ -113,7 +112,6 @@
                    <font>
                     <family>微软雅黑</family>
                     <pointsize>13</pointsize>
-                    <weight>50</weight>
                     <bold>false</bold>
                    </font>
                   </property>
@@ -163,7 +161,6 @@
                    <font>
                     <family>微软雅黑</family>
                     <pointsize>10</pointsize>
-                    <weight>75</weight>
                     <bold>true</bold>
                    </font>
                   </property>
@@ -191,7 +188,6 @@
                    <font>
                     <family>微软雅黑</family>
                     <pointsize>10</pointsize>
-                    <weight>75</weight>
                     <bold>true</bold>
                     <underline>true</underline>
                    </font>
@@ -388,7 +384,6 @@
                    <font>
                     <family>微软雅黑</family>
                     <pointsize>20</pointsize>
-                    <weight>75</weight>
                     <bold>true</bold>
                    </font>
                   </property>
@@ -406,10 +401,7 @@
              <item>
               <widget class="QWidget" name="widget_15" native="true">
                <layout class="QGridLayout" name="gridLayout_3">
-                <item row="3" column="1">
-                 <widget class="QLineEdit" name="resgin_pwd_con"/>
-                </item>
-                <item row="1" column="0">
+                <item row="2" column="0">
                  <widget class="QLabel" name="label_9">
                   <property name="font">
                    <font>
@@ -425,102 +417,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1">
-                 <widget class="QLineEdit" name="resgin_nickname"/>
-                </item>
-                <item row="0" column="0">
-                 <widget class="QLabel" name="label_8">
-                  <property name="font">
-                   <font>
-                    <family>微软雅黑</family>
-                    <pointsize>10</pointsize>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>用户：</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="1">
-                 <widget class="QLineEdit" name="resgin_pwd"/>
-                </item>
-                <item row="5" column="0">
-                 <widget class="QLabel" name="label_13">
-                  <property name="font">
-                   <font>
-                    <family>微软雅黑</family>
-                    <pointsize>10</pointsize>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>邮箱：</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="5" column="1">
-                 <widget class="QLineEdit" name="resgin_email"/>
-                </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="label_10">
-                  <property name="font">
-                   <font>
-                    <family>微软雅黑</family>
-                    <pointsize>10</pointsize>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>密码：</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="0">
-                 <widget class="QLabel" name="label_11">
-                  <property name="font">
-                   <font>
-                    <family>微软雅黑</family>
-                    <pointsize>10</pointsize>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>确认密码：</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="0">
-                 <widget class="QLabel" name="label_12">
-                  <property name="font">
-                   <font>
-                    <family>微软雅黑</family>
-                    <pointsize>10</pointsize>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>手机号码：</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="1">
-                 <widget class="QLineEdit" name="resgin_phone"/>
-                </item>
-                <item row="0" column="1">
-                 <widget class="QLineEdit" name="resgin_usr"/>
-                </item>
-                <item row="6" column="0" colspan="2">
+                <item row="9" column="0" colspan="2">
                  <widget class="QLabel" name="re_status">
                   <property name="font">
                    <font>
@@ -539,7 +436,118 @@
                   </property>
                  </widget>
                 </item>
+                <item row="4" column="1">
+                 <widget class="QLineEdit" name="resgin_pwd_con"/>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLineEdit" name="resgin_usr"/>
+                </item>
+                <item row="6" column="0">
+                 <widget class="QLabel" name="label_12">
+                  <property name="font">
+                   <font>
+                    <family>微软雅黑</family>
+                    <pointsize>10</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>手机号码：</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="label_10">
+                  <property name="font">
+                   <font>
+                    <family>微软雅黑</family>
+                    <pointsize>10</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>密码：</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="label_11">
+                  <property name="font">
+                   <font>
+                    <family>微软雅黑</family>
+                    <pointsize>10</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>确认密码：</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="7" column="0">
+                 <widget class="QLabel" name="label_13">
+                  <property name="font">
+                   <font>
+                    <family>微软雅黑</family>
+                    <pointsize>10</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>邮箱：</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_8">
+                  <property name="font">
+                   <font>
+                    <family>微软雅黑</family>
+                    <pointsize>10</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>用户：</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QLineEdit" name="resgin_pwd"/>
+                </item>
+                <item row="6" column="1">
+                 <widget class="QLineEdit" name="resgin_phone"/>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QLineEdit" name="resgin_nickname"/>
+                </item>
+                <item row="7" column="1">
+                 <widget class="QLineEdit" name="resgin_email"/>
+                </item>
                </layout>
+               <zorder>label_9</zorder>
+               <zorder>label_8</zorder>
+               <zorder>label_13</zorder>
+               <zorder>label_10</zorder>
+               <zorder>label_11</zorder>
+               <zorder>label_12</zorder>
+               <zorder>re_status</zorder>
+               <zorder>resgin_usr</zorder>
+               <zorder>resgin_pwd_con</zorder>
+               <zorder>resgin_pwd</zorder>
+               <zorder>resgin_phone</zorder>
+               <zorder>resgin_email</zorder>
+               <zorder>resgin_nickname</zorder>
               </widget>
              </item>
              <item>
@@ -564,7 +572,6 @@
                    <font>
                     <family>微软雅黑</family>
                     <pointsize>10</pointsize>
-                    <weight>75</weight>
                     <bold>true</bold>
                    </font>
                   </property>
@@ -592,7 +599,6 @@
                    <font>
                     <family>微软雅黑</family>
                     <pointsize>10</pointsize>
-                    <weight>75</weight>
                     <bold>true</bold>
                    </font>
                   </property>
@@ -694,7 +700,6 @@
                    <font>
                     <family>微软雅黑</family>
                     <pointsize>20</pointsize>
-                    <weight>75</weight>
                     <bold>true</bold>
                    </font>
                   </property>
@@ -724,7 +729,6 @@
                    <font>
                     <family>微软雅黑</family>
                     <pointsize>10</pointsize>
-                    <weight>75</weight>
                     <bold>true</bold>
                    </font>
                   </property>
@@ -742,7 +746,6 @@
                    <font>
                     <family>微软雅黑</family>
                     <pointsize>10</pointsize>
-                    <weight>75</weight>
                     <bold>true</bold>
                    </font>
                   </property>
@@ -798,7 +801,6 @@
                    <font>
                     <family>微软雅黑</family>
                     <pointsize>10</pointsize>
-                    <weight>75</weight>
                     <bold>true</bold>
                    </font>
                   </property>
@@ -826,7 +828,6 @@
                    <font>
                     <family>微软雅黑</family>
                     <pointsize>10</pointsize>
-                    <weight>75</weight>
                     <bold>true</bold>
                    </font>
                   </property>

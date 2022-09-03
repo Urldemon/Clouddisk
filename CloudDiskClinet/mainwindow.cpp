@@ -1,6 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#if _MSC_VER >=1600
+#pragma execution_character_set("utf-8")
+#endif
 #include "transform.h"
+#include "common/downdask.h"
+#include "common/uploadtask.h"
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -18,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // 默认显示我的文件窗口
     ui->stackedWidget->setCurrentWidget(ui->myfiles_page);
+
 }
 
 MainWindow::~MainWindow()
@@ -29,6 +35,7 @@ void MainWindow::showMainWindos()
 {
     // 输出界面
     this->show();
+
     // 将显示窗口挪到桌面中央
     m_common.moveToCenter(this);
 
@@ -37,6 +44,9 @@ void MainWindow::showMainWindos()
 
     // 切换到我的文件页面
     ui->stackedWidget->setCurrentWidget(ui->myfiles_page);
+
+    // 刷新用户文件列表平
+    ui->myfiles_page->refreshFile();
 }
 
 void MainWindow::managerSignals()
@@ -71,6 +81,8 @@ void MainWindow::managerSignals()
     connect(ui->btn_group, &ButtonGroup::sigMyFile, [=]()
     {
         ui->stackedWidget->setCurrentWidget(ui->myfiles_page);
+        // 刷新用户文件列表平
+        ui->myfiles_page->refreshFile();
 
     });
     // 分享列表
@@ -78,6 +90,7 @@ void MainWindow::managerSignals()
     {
         ui->stackedWidget->setCurrentWidget(ui->sharefile_page);
         // 刷新分享列表
+        ui->sharefile_page->refreshFiles();
     });
     // 下载榜
     connect(ui->btn_group, &ButtonGroup::sigRanking, [=]()
@@ -95,24 +108,22 @@ void MainWindow::managerSignals()
     // 切换用户
     connect(ui->btn_group, &ButtonGroup::sigSwitchUser, [=]()
     {
-        qDebug() << "bye bye...";
         showLogin();
     });
 
     // 登录出错重新登录
-    connect(ui->myfiles_page,&MyFile::loginAgainSignal,[=]()
-    {
-        qDebug() << "bye bye...";
-        showLogin();
-    });
+    connect(ui->myfiles_page,&MyFile::loginAgainSignal,this,&MainWindow::showLogin);
+    connect(ui->sharefile_page,&ShareFile::loginAgainSignal,this,&MainWindow::showLogin);
+    connect(ui->ranking_page,&Ranking::loginAgainSignal,this,&MainWindow::showLogin);
 
-    // stack窗口切换
+    //  stack窗口切换
     // 下载操作
     connect(ui->myfiles_page,&MyFile::gotoTransfer,[=](TransferStatus status)
     {
         ui->btn_group->slotButtonClick(Page::TRANSFER);
 
 //        ui->stackedWidget->setCurrentWidget(ui->transfer_page);   // 按钮没有发生变化
+
         if(status == TransferStatus::Uplaod)
         {
              ui->transfer_page->showUpload();
@@ -123,6 +134,8 @@ void MainWindow::managerSignals()
         }
     });
 
+    // 共享目录跳转
+    connect(ui->sharefile_page,&ShareFile::gotoTransfer,ui->myfiles_page,&MyFile::gotoTransfer);
 }
 
 void MainWindow::showLogin()
@@ -130,5 +143,17 @@ void MainWindow::showLogin()
     // 发送信号
     emit changeUser();
 
+    // 清除下载列表
+    DownDask *downDask = DownDask::getInstance();
+    downDask->clearList();
+
+    // 清除上传列表
+    UpLoadTask *uploadTask = UpLoadTask::getInstance();
+    uploadTask->clearList();
+
+    // 清空上个用户文件列表
+    ui->myfiles_page->clearFileList();
+    // 情况上一个用户的文件item
+    ui->myfiles_page->clearItems();
 
 }

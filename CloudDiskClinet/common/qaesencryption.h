@@ -1,6 +1,8 @@
 #ifndef QAESENCRYPTION_H
 #define QAESENCRYPTION_H
+#if _MSC_VER >=1600
 #pragma execution_character_set("utf-8")
+#endif
 
 #ifdef QtAES_EXPORTS
 #include "qtaes_export.h"

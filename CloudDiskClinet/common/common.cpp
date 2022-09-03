@@ -1,4 +1,7 @@
 #include "common.h"
+#if _MSC_VER >=1600
+#pragma execution_character_set("utf-8")
+#endif
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -6,13 +9,15 @@
 #include <QApplication>
 #include <QFile>
 #include <QDir>
+#include <QMessageBox>
 
 #pragma execution_character_set("utf-8")
 
 // 单例初始化（饿汉式）
 QNetworkAccessManager* Common::m_netManager = new QNetworkAccessManager;
 
-
+// 类外初始化
+QStringList Common::m_typeList = QStringList();
 
 Common::Common(QObject* parent)
 {
@@ -226,6 +231,13 @@ QString Common::getStrSha256(QString str)
     return array.toHex();
 }
 
+QString Common::getStrShaMd5(QString str)
+{
+    QByteArray array;
+    array = QCryptographicHash::hash(str.toLocal8Bit(),QCryptographicHash::Md5);
+    return array.toHex();
+}
+
 QString Common::getFileMd5(QString path)
 {
     QFile file(path);
@@ -295,7 +307,53 @@ void Common::moveToCenter(QWidget *tmp)
 
 void Common::getFileTypeList()
 {
+    QDir dir(FILETYPEDIR);
+    if(dir.exists() == false)                   // 不存在则创建
+    {
+        dir.mkpath(FILETYPEDIR);
+        cout << FILETYPEDIR << "创建成功！！！";
+    }
 
+    /*
+     * QDir的一些用法：
+        QDir::Dirs      列出目录；
+        QDir::AllDirs   列出所有目录，不对目录名进行过滤；
+        QDir::Files     列出文件；
+        QDir::Drives    列出逻辑驱动器名称，该枚举变量在Linux/Unix中将被忽略；
+        QDir::NoSymLinks        不列出符号链接；
+        QDir::NoDotAndDotDot    不列出文件系统中的特殊文件.及..；
+        QDir::NoDot             不列出.文件，即指向当前目录的软链接
+        QDir::NoDotDot          不列出..文件；
+        QDir::AllEntries        其值为Dirs | Files | Drives，列出目录、文件、驱动器及软链接等所有文件；
+        QDir::Readable      列出当前应用有读权限的文件或目录；
+        QDir::Writable      列出当前应用有写权限的文件或目录；
+        QDir::Executable    列出当前应用有执行权限的文件或目录；
+        Readable、Writable及Executable均需要和Dirs或Files枚举值联合使用；
+        QDir::Modified      列出已被修改的文件，该值在Linux/Unix系统中将被忽略；
+        QDir::Hidden        列出隐藏文件；
+        QDir::System        列出系统文件；
+        QDir::CaseSensitive 设定过滤器为大小写敏感。
+    */
+    dir.setFilter(QDir::Files| QDir::NoDot |  QDir::NoDotDot | QDir::NoSymLinks);       // 过滤获取的文件
+    dir.setSorting(QDir::Size | QDir::Reversed);                                        // 排序规则‘
+
+    QFileInfoList list = dir.entryInfoList();                                           // 将其转化为list对象
+
+    for(auto val : list)
+    {
+        m_typeList.append(val.fileName());                                              // 将文件名传入
+    }
+
+}
+
+QString Common::getFileType(QString type)
+{
+    if(m_typeList.contains(type) == true)
+    {
+        return QString(FILETYPEDIR) + "/" + type;
+    }
+
+    return QString(FILETYPEDIR) + "/other.png";
 }
 
 void Common::writeRecord(QString user, QString filename, QString code, QString path)
@@ -317,7 +375,6 @@ void Common::writeRecord(QString user, QString filename, QString code, QString p
     }
 
     QString filepath = path + user;             // 记录每个账户的上传下载信息文件的路径
-    cout  << filename.toUtf8().data();
 
     // 如果文件存在，先读取文件的原本来内容
     QFile file(filepath);
@@ -335,30 +392,31 @@ void Common::writeRecord(QString user, QString filename, QString code, QString p
 
     /*
        秒传文件：
-            文件已存在：{"code":"005"}
-            秒传成功：  {"code":"006"}
-            秒传失败：  {"code":"007"}
+            文件不在存储区 {"code":"110"}
+            文件已存在：  {"code":"111"}
+            秒传成功：    {"code":"112"}
+
         上传文件：
-            成功：{"code":"008"}
-            失败：{"code":"009"}
+            成功：{"code":"113"}
+            失败：{"code":"114"}
         下载文件：
-            成功：{"code":"010"}
-            失败：{"code":"011"}
+            成功：{"code":"115"}
+            失败：{"code":"116"}
     */
 
     QString actionStr;                  // 记录状态
 
-    if(code == "005")
+    if(code == "111")
         actionStr = "上传失败，文件已存在";
-    else if(code == "006")
+    else if(code == "112")
         actionStr = "秒传成功";
-    else if(code == "008")
+    else if(code == "113")
         actionStr = "上传成功";
-    else if(code == "009")
+    else if(code == "114")
         actionStr = "上传失败";
-    else if(code == "010")
+    else if(code == "115")
         actionStr = "下载成功";
-    else if(code == "011")
+    else if(code == "116")
         actionStr = "下载失败";
     else
     {
@@ -366,8 +424,7 @@ void Common::writeRecord(QString user, QString filename, QString code, QString p
         return ;
     }
 
-    QString str = QString("[%1]\t[%2]\t[%3]\r\n").arg(filename).arg(timeStr).arg(actionStr);
-    cout  << str.toUtf8().data();
+    QString str = QString("%1 [%2] :filename:[%3]\r\n").arg(timeStr).arg(actionStr).arg(filename);
 
     file.write(str.toLocal8Bit());
 

@@ -1,7 +1,10 @@
 #include "logininfoinstance.h"
+#if _MSC_VER >=1600
+#pragma execution_character_set("utf-8")
+#endif
 #include "common.h"
 #include <QDebug>
-#pragma execution_character_set("utf-8")
+
 
 LoginInfoInstance* LoginInfoInstance::instance = new LoginInfoInstance;
 

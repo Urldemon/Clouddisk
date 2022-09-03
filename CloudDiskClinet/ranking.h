@@ -1,6 +1,8 @@
 #ifndef RANKING_H
 #define RANKING_H
-
+#if _MSC_VER >=1600
+#pragma execution_character_set("utf-8")
+#endif
 #include <QWidget>
 #include <common/common.h>
 #include <QNetworkAccessManager>
@@ -31,8 +33,12 @@ public:
     void getUserFileList();                             // 获取新的文件列表信息  难
     void getFileJsonInfo(QByteArray data);              // 将获取到的数据解析处理
     void refreshList();                                 // 更新排行版列表
+    void clearshareFileList();                          // 清空排行列表
 
-    QByteArray setFileListJson(int start,int count);
+    QByteArray setFileListJson(int start,int count);    // 生成获取共享文件json
+    QString getCountStatus(QByteArray json);            // 获取服务器返回信息
+signals:
+    void loginAgainSignal();
 private:
     Ui::Ranking *ui;
     Common m_common;

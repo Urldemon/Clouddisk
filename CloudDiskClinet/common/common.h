@@ -1,6 +1,8 @@
 #ifndef COMMON2_H
 #define COMMON2_H
+#if _MSC_VER >=1600
 #pragma execution_character_set("utf-8")
+#endif
 
 #include <QObject>
 #include <QListWidgetItem>
@@ -10,7 +12,7 @@
 
 
 #define CONFFILE        "conf/cfg.json"       // 存放配置信息的目录
-#define FILETYPEDIR     "conf/fileType/"                                     // 存放文件类型图片目录
+#define FILETYPEDIR     "conf/fileType"                                     // 存放文件类型图片目录
 #define RECORDDIR       "conf/record/"                                      // 用户文件上传下载记录
 
 #define cout  qDebug() << "[" << __FILE__ << ":" << __LINE__ << "]"
@@ -41,6 +43,9 @@ struct FileInfo
     QListWidgetItem *item;  // list widget 的item
 };
 
+// Normal：普通用户列表，PvAsc：按下载量升序， PvDesc：按下载量降序
+enum Display{Normal, PvAsc, PvDesc};
+
 class Common:public QObject
 {
     Q_OBJECT
@@ -51,7 +56,8 @@ public:
     QString getCode(QByteArray array);
     QString getConfvalue(QString title,QString key,QString path= CONFFILE);
 
-    QByteArray setGetCountjson(QString user,QString token);                                       // 生成认证登录信息
+    QByteArray setGetCountjson(QString user,QString token);                                       // 获取认证登录信息
+
 
     void writeWebInfo(QString ip,QString port,QString path= CONFFILE);
     void writeSgininInfo(QString user,QString pwd,bool isremeber,QString path= CONFFILE);
@@ -59,6 +65,8 @@ public:
     void writeRecord(QString user, QString filename, QString code, QString path = RECORDDIR);  // 将传输数据写入磁盘
 
     QString getStrSha256(QString str);                                  // 对数进行sha256加密
+
+    QString getStrShaMd5(QString str);                                  // 对数进行sha256加密
 
     QString getFileMd5(QString path);                                   // 生成文件md5值
 
@@ -68,6 +76,8 @@ public:
 
     void getFileTypeList();                                             // 初始化图片数据
 
+    QString getFileType(QString type);                                  // 判断类型是否存在
+
 
 
 public:
@@ -75,6 +85,8 @@ public:
 
     static AesKeyInstance* getAesSpy();
 private:
+    // 类型图标显示序列
+    static QStringList m_typeList;
 
     // http类
     static QNetworkAccessManager *m_netManager;

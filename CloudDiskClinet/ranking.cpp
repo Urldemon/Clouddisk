@@ -1,11 +1,14 @@
 #include "ranking.h"
 #include "ui_ranking.h"
-
+#if _MSC_VER >=1600
+#pragma execution_character_set("utf-8")
+#endif
 #include <QTableWidget>
 #include <QNetworkReply>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QMessageBox>
 
 Ranking::Ranking(QWidget *parent) :
     QWidget(parent),
@@ -64,7 +67,7 @@ void Ranking::initTableWidget()
     ui->tableWidget->horizontalHeader()->setStyleSheet(
                 "QHeaderView::section{"
                 "background: skyblue;"
-                "font: 10pt \"新宋体\";"
+                "font: 10pt \"微软雅黑\";"
                 "height: 35px;"
                 "border:1px solid #c7f0ea;"
                 "}");
@@ -83,13 +86,21 @@ void Ranking::refreshFiles()
 {
     // 先获取文件个数
     m_userFilesCount = 0;
+
     // 获取链接对象
     LoginInfoInstance * login = LoginInfoInstance::getInstance();
 
     // 请求头链接
+    QNetworkRequest request;
     QString url = QString("http://%1:%2/sharefile?cmd=count").arg(login->getIp()).arg(login->getPort());
+    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/json");
+    request.setUrl(QUrl(url));
+
+    // 生成array数据
+    QByteArray array = m_common.setGetCountjson(m_login->getUser(),m_login->getToken());
+
     // 发送请求信息
-    QNetworkReply* reply = m_manager->get(QNetworkRequest(QUrl(url)));
+    QNetworkReply* reply = m_manager->post(request,array);
     if(reply == nullptr)
     {
         cout << "reply == nullptr";
@@ -109,7 +120,10 @@ void Ranking::refreshFiles()
         QByteArray array = reply->readAll();
         reply->deleteLater();
 
-        m_userFilesCount = array.toLong();
+        m_userFilesCount = getCountStatus(array).toInt();
+
+        // 清空文件列表信息
+        clearshareFileList();
 
         if(m_userFilesCount > 0)
         {
@@ -141,16 +155,18 @@ void Ranking::getUserFileList()
     else if(m_count > m_userFilesCount)     // 如果请求文件数量大于共享的文件数目
         m_count = m_userFilesCount;
 
-    QNetworkRequest request;                // 创建请求对象
-
-
     // 向服务器发起请求
+    QNetworkRequest request;                // 创建请求对象
     QString url = QString("http://%1:%2/sharefile?cmd=pvdesc").arg(m_login->getIp()).arg(m_login->getPort());
-
-    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
+    request.setUrl(QUrl(url));
+    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/json");
 
     // 整理好json数据
     QByteArray data = setFileListJson(m_start,m_count);
+
+    // 改变文件起点位置
+    m_start += m_count;
+    m_userFilesCount -= m_count; // 文件数量递减
 
     // 发送post请求
     QNetworkReply *reply = m_manager->post(request,data);
@@ -173,9 +189,9 @@ void Ranking::getUserFileList()
         reply->deleteLater();
 
         // 不是错误码处理文件列表json信息
-        if(m_common.getCode(array) == "104")
+        if(m_common.getCode(array) == "100")
         {
-           cout << array.data();
+
            getFileJsonInfo(array);
 
            // 继续获取共享文件列表   =====-===--==
@@ -187,6 +203,7 @@ void Ranking::getUserFileList()
 
 void Ranking::getFileJsonInfo(QByteArray data)
 {
+
     QJsonParseError error;
 
     // 将获取的文件进行解析
@@ -198,37 +215,33 @@ void Ranking::getFileJsonInfo(QByteArray data)
             cout << "doc.isNull() || doc.isEmpty()";
             return;
         }
+
         if(doc.isObject())
         {
             // QJsonObject json对象，描述json数据中{}括起来部分
             QJsonObject obj = doc.object();         // 获取最外层对象
 
-            if(obj.value("retcode").toString() == "100")
+            // 获取games所对应的数组
+            // QJsonArray json数组，描述json数据中[]括起来部分
+            QJsonArray array = obj.value("files").toArray();
+
+            cout << array;
+            long size = array.size();
+
+            cout << "RankingFileCount:" << size;
+
+            for(auto val:array)
             {
-                // 获取games所对应的数组
-                // QJsonArray json数组，描述json数据中[]括起来部分
-                QJsonArray array = obj.value("file").toArray();
+                // 将数组中数据转化成对象
+                QJsonObject tmp = val.toObject();
 
-                long size = array.size();
+                RankingFileInfo *info = new RankingFileInfo;
+                info->filename = tmp.value("file_name").toString();
+                info->pv = tmp.value("pv").toInt();
 
-                cout << "file:" << size;
-
-                for(auto val:array)
-                {
-                    // 将数组中数据转化成对象
-                    QJsonObject tmp = val.toObject();
-
-                    RankingFileInfo *info = new RankingFileInfo;
-                    info->filename = tmp.value("file_name").toString();
-                    info->pv = tmp.value("pv").toInt();
-
-                    // list添加结点
-                    m_list.append(info);
-                }
+                // list添加结点
+                m_list.push_back(info);
             }
-            else
-                cout << "recode 104";
-
         }
     }
     else
@@ -237,48 +250,69 @@ void Ranking::getFileJsonInfo(QByteArray data)
 
 void Ranking::refreshList()
 {
-    int rowCount = ui->tableWidget->rowCount();      // 获取表单行数
-    for(int i = 0;i < rowCount;++i)
+    int rowCount = ui->tableWidget->rowCount();         // 获取tableWidget上的行数
+    for(int i = 0; i < rowCount; ++i)
     {
-        // 参数为0.不是i,自动delete里面的item
+        // 参数为0，不是i，自动delete里面的item
         ui->tableWidget->removeRow(0);
+
+
     }
 
-    int n = m_list.size();
-    rowCount = 0;
-    for(int i = 0;i < n;++i)
-    {
-        RankingFileInfo *tmp = m_list[i];
+    int n = m_list.size(); // 元素个数
 
-        // 创建item
+    rowCount = 0;
+    for(int i = 0; i < n; ++i)
+    {
+        RankingFileInfo *tmp = m_list.at(i);
+        ui->tableWidget->insertRow(rowCount);    // 插入新行
+
+        // 新建item
         QTableWidgetItem *item1 = new QTableWidgetItem;
         QTableWidgetItem *item2 = new QTableWidgetItem;
         QTableWidgetItem *item3 = new QTableWidgetItem;
 
         // 设置字体显示风格
-        item1->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-        item2->setTextAlignment(Qt::AlignLeft| Qt::AlignVCenter);
-        item3->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+        item1->setTextAlignment(Qt::AlignHCenter |  Qt::AlignVCenter);
+        item2->setTextAlignment(Qt::AlignLeft |  Qt::AlignVCenter);
+        item3->setTextAlignment(Qt::AlignHCenter |  Qt::AlignVCenter);
 
         // 排行
-        // 字体大小
+        // 字体大写
         QFont font;
-        font.setPointSize(15);      // 字体大小
-        item1->setFont(font);       // 设置字体
+        font.setPointSize(10);                  // 设置字体大小
+        font.setFamily("微软雅黑");              // 设置文本类型
+
+        // 设置文字格式
+        item1->setFont(font);
+        item2->setFont(font);
+        item3->setFont(font);
+
+        // 排名
         item1->setText(QString::number(i+1));
 
         // 文件名
         item2->setText(tmp->filename);
 
         // 下载量
-        item3->setText(QString::number(tmp->pv));       // 将数字转化成字符串
+        item3->setText(QString::number(tmp->pv));
 
-        // 设置item
-        ui->tableWidget->setItem(rowCount,0,item1);
-        ui->tableWidget->setItem(rowCount,1,item2);
-        ui->tableWidget->setItem(rowCount,2,item3);
+        // 设置将item整合到tableWidget上
+        ui->tableWidget->setItem(rowCount, 0, item1);
+        ui->tableWidget->setItem(rowCount, 1, item2);
+        ui->tableWidget->setItem(rowCount, 2, item3);
 
-        ++rowCount;     // 行++
+        rowCount++;                              // 行++
+    }
+}
+
+void Ranking::clearshareFileList()
+{
+    while(m_list.empty() == false)
+    {
+        RankingFileInfo *val = m_list.front();      // 获取头节点信息
+        delete val;                                 // 释放创建的数据类型
+        m_list.pop_front();                         // 删除头节点
     }
 }
 
@@ -286,7 +320,7 @@ QByteArray Ranking::setFileListJson(int start, int count)
 {
     QMap<QString,QVariant> tmp;
     tmp.insert("start",start);
-    tmp.insert("cound",count);
+    tmp.insert("count",count);
     tmp.insert("user_name",m_login->getUser());
     tmp.insert("token",m_login->getToken());
 
@@ -298,3 +332,30 @@ QByteArray Ranking::setFileListJson(int start, int count)
     }
     return jsondocument.toJson();
 }
+
+QString Ranking::getCountStatus(QByteArray json)
+{
+    QJsonParseError error;
+    QStringList list;
+
+    // 将json数据转化成doc
+    QJsonDocument doc = QJsonDocument::fromJson(json);
+    if(doc.isNull() || doc.isEmpty())
+    {
+        cout << "doc.isNull() || doc.isEmpty()";
+        return "";
+    }
+
+    if(doc.isObject())
+    {
+        QString ret = doc.object().value("retcode").toString();
+        if(ret == "400")
+        {
+            QMessageBox::warning(this,"账户异常","请重新登录！！");
+            emit loginAgainSignal();
+            return "";
+        }
+    }
+    return QString(doc.object().value("count").toString());
+}
+

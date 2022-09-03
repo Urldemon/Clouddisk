@@ -1,5 +1,9 @@
 #include "aeskeyinstance.h"
 #include "common.h"
+#if _MSC_VER >=1600
+#pragma execution_character_set("utf-8")
+#endif
+
 #include <QDebug>
 #include <QCryptographicHash>
 #pragma execution_character_set("utf-8")
@@ -33,6 +37,7 @@ void AesKeyInstance::destroy()
         delete AesKeyInstance::encryption;
         AesKeyInstance::encryption = nullptr;
     }
+
     if(AesKeyInstance::spyobj != nullptr)
     {
         delete AesKeyInstance::spyobj;

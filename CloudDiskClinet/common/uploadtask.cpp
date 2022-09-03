@@ -1,7 +1,11 @@
 #include "uploadtask.h"
+#if _MSC_VER >=1600
+#pragma execution_character_set("utf-8")
+#endif
 #include <QDebug>
 #include <QFileInfo>
 #include <QVBoxLayout>
+#include <QFontMetrics>
 #include "uploadlayout.h"
 
 UpLoadTask* UpLoadTask::instance = new UpLoadTask;
@@ -67,6 +71,7 @@ int UpLoadTask::appendUploadList(QString path)
     tmp->isUpload = false;                          // 当前文件没有被上传
 
     DataProgress *p = new DataProgress;             // 创建任务对应的进度条控件
+
     p->setFileName(tmp->filename);                  // 设置文件名并初始化
     tmp->dp = p;                                    // 赋值
 
@@ -79,6 +84,7 @@ int UpLoadTask::appendUploadList(QString path)
     }
 
     QVBoxLayout *layout = (QVBoxLayout*)pUpload->getUpLoadLayout();
+
     // 添加到布局，最后一个是弹簧，插入到当黄上边
     layout->insertWidget(layout->count()-1, p);
 
@@ -130,6 +136,7 @@ UploadFileDate *UpLoadTask::takeTask()
 // 删除上传完成的任务
 void UpLoadTask::dealUploadTask()
 {
+    if(isEmpty() == true)return;
     UploadFileDate *val = list.front();
     if(val->isUpload == true)
     {

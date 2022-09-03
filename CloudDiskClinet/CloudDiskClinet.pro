@@ -18,6 +18,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     common/aeskeyinstance.cpp \
     common/common.cpp \
+    common/downdask.cpp \
+    common/downloadlayout.cpp \
     common/logininfoinstance.cpp \
     common/qaesencryption.cpp \
     common/uploadlayout.cpp \
@@ -29,6 +31,7 @@ SOURCES += \
     ranking.cpp \
     selfwidget/buttongroup.cpp \
     selfwidget/dataprogress.cpp \
+    selfwidget/fileproperty.cpp \
     selfwidget/mymenu.cpp \
     selfwidget/titlewidget.cpp \
     sharefile.cpp \
@@ -40,6 +43,8 @@ HEADERS += \
     aesni/aesni-key-exp.h \
     common/aeskeyinstance.h \
     common/common.h \
+    common/downdask.h \
+    common/downloadlayout.h \
     common/logininfoinstance.h \
     common/qaesencryption.h \
     common/uploadlayout.h \
@@ -50,6 +55,7 @@ HEADERS += \
     ranking.h \
     selfwidget/buttongroup.h \
     selfwidget/dataprogress.h \
+    selfwidget/fileproperty.h \
     selfwidget/mymenu.h \
     selfwidget/titlewidget.h \
     sharefile.h \
@@ -62,6 +68,7 @@ FORMS += \
     ranking.ui \
     selfwidget/buttongroup.ui \
     selfwidget/dataprogress.ui \
+    selfwidget/fileproperty.ui \
     selfwidget/titlewidget.ui \
     sharefile.ui \
     transform.ui

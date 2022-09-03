@@ -1,9 +1,13 @@
 #include "transform.h"
 #include "ui_transform.h"
+#if _MSC_VER >=1600
+#pragma execution_character_set("utf-8")
+#endif
 #include <QFile>
 #include "common/common.h"
 #include "common/uploadlayout.h"
 #include "common/logininfoinstance.h"
+#include "common/downloadlayout.h"
 
 TransForm::TransForm(QWidget *parent) :
     QWidget(parent),
@@ -15,11 +19,11 @@ TransForm::TransForm(QWidget *parent) :
     UpLoadLayout *uploadLayout = UpLoadLayout::getInstance();
     uploadLayout->setUpLoadLayout(ui->upload_scroll);
 
-    // 设置tab页
-    connect(ui->tabWidget,&QTabWidget::currentChanged,[=](int index)
-    {
+    // 设置下载布局实例
+    DownloadLayout *downloadLayout = DownloadLayout::getInstance();
+    downloadLayout->setDownloadLayout(ui->download_scroll);
 
-    });
+    ui->tabWidget->setCurrentIndex(0);
 
     // 切换tab页
     connect(ui->tabWidget, &QTabWidget::currentChanged, [=](int index)
@@ -35,7 +39,7 @@ TransForm::TransForm(QWidget *parent) :
         else //传输记录
         {
             emit currentTabSignal("传输记录");
-//            dispayDataRecord(); //显示数据传输记录
+            dispayDataRecord(); //显示数据传输记录
         }
     });
 
@@ -59,6 +63,33 @@ TransForm::TransForm(QWidget *parent) :
     });
 }
 
+void TransForm::dispayDataRecord(QString path)
+{
+    //获取登陆信息实例
+    LoginInfoInstance *login = LoginInfoInstance::getInstance(); //获取单例
+
+    //文件名字，登陆用户名则为文件名
+    QString fileName = path + login->getUser();
+    QFile file(fileName);
+
+    if( false == file.open(QIODevice::ReadOnly) ) //只读方式打开
+    {
+        cout << "file.open(QIODevice::ReadOnly) err";
+        return;
+    }
+
+    QByteArray array = file.readAll();
+
+    #ifdef _WIN32 //如果是windows平台
+        //fromLocal8Bit(), 本地字符集转换为utf-8
+        ui->record_msg->setText( QString::fromLocal8Bit(array) );
+    #else //其它平台
+        ui->record_msg->setText( array );
+    #endif
+
+        file.close();
+}
+
 TransForm::~TransForm()
 {
     delete ui;
@@ -71,5 +102,6 @@ void TransForm::showUpload()
 
 void TransForm::showDownload()
 {
-    ui->tabWidget->setCornerWidget(ui->download_list);
+
+    ui->tabWidget->setCurrentWidget(ui->download_list);
 }

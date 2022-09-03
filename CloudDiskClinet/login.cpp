@@ -1,5 +1,8 @@
 #include "login.h"
 #include "ui_login.h"
+#if _MSC_VER >=1600
+#pragma execution_character_set("utf-8")
+#endif
 #include <QPainter>
 #include <QMessageBox>
 #include <QJsonDocument>
@@ -10,9 +13,9 @@
 #include <QDebug>
 #include "common/logininfoinstance.h"
 #include "common/common.h"
-#pragma execution_character_set("utf-8")
 
-#define DEBUG
+
+//#define DEBUG
 
 Login::Login(QWidget *parent) :
     QDialog(parent),
@@ -20,6 +23,14 @@ Login::Login(QWidget *parent) :
 {
     ui->setupUi(this);
 
+#if 1
+    ui->resgin_email->setText("694248755@qq.com");
+    ui->resgin_nickname->setText("woshinidaye");
+    ui->resgin_phone->setText("13316901798");
+    ui->resgin_pwd->setText("123456");
+    ui->resgin_pwd_con->setText("123456");
+    ui->resgin_usr->setText("694248755");
+#endif
     // 给title_wg窗口设置父窗口类对象
     ui->title_wg->setParent(this);
 
@@ -127,7 +138,7 @@ Login::~Login()
 QByteArray Login::SetSgininJson(QString user, QString pwd)
 {
     QMap<QString,QVariant> loginArray;
-    loginArray.insert("user",user);
+    loginArray.insert("user_name",user);
     loginArray.insert("password",pwd);
     // 将键值队转化为json格式
     QJsonDocument jsonDocument = QJsonDocument::fromVariant(loginArray);
@@ -219,8 +230,12 @@ void Login::on_sginin_btn_clicked()
 
     // 登录信息加密，判断是否要保存
     m_common.writeSgininInfo(user,pwd,ui->rember_pwd->isChecked());
+
+    // 先AES对称加密
+    QByteArray enc = m_aeskey->encode(pwd.toLocal8Bit());
+
     // 将数据打包成json格式
-    QByteArray array = SetSgininJson(user,pwd);
+    QByteArray array = SetSgininJson(user,m_common.getStrShaMd5(QString(enc.data())));
     cout << "sginin json data "<< array;
 
     //
@@ -241,7 +256,6 @@ void Login::on_sginin_btn_clicked()
     // 跳转到主界面上
     m_mainwin->showMainWindos();
 
-
     LoginInfoInstance *ptr = LoginInfoInstance::getInstance();
     ptr->setLoginInfo(user,serverip,serverport,"sdasdasdasd");
 
@@ -257,12 +271,13 @@ void Login::on_sginin_btn_clicked()
 
         // 读取返回的数据
         QByteArray json = reply->readAll();
-        QStringList code = getSgininStatus(json);
-        if(code.at(0) == "000")
+        reply->deleteLater();
+
+        QStringList code = getSgininStatus(json);                   // 特殊的手法
+        if(code.at(0) == "100")
         {
             cout << "登录成功！";
 
-            //
             LoginInfoInstance *ptr = LoginInfoInstance::getInstance();
             ptr->setLoginInfo(user,serverip,serverport,code.at(1));
             cout << ptr->getUser().toUtf8().data() << "," << ptr->getIp() << "," << ptr->getPort() << code.at(1);
@@ -275,7 +290,6 @@ void Login::on_sginin_btn_clicked()
         {
             ui->sginin_status->setText("登录失败，用户名或密码错误！");
         }
-        reply->deleteLater();
     });
 #endif
 }
@@ -339,14 +353,18 @@ void Login::on_resgin_confirm_btn_clicked()
     }
     ui->re_status->clear();
 
+    // 先AES对称加密
+    QByteArray enc = m_aeskey->encode(pwd.toLocal8Bit());
+
     // 将数据打包成json格式
-    QByteArray array = SetResginJson(user,nickname,m_common.getStrSha256(pwd),phone,email);
+    QByteArray array = SetResginJson(user,nickname,m_common.getStrShaMd5(QString(enc.data())),phone,email);
     qDebug() << "resgin json data "<< array;
 
     QNetworkRequest request;
     // 请求行
     QString url = QString("http://%1:%2/reup").arg(ui->server_ip->text()).arg(ui->server_port->text());
     request.setUrl(QUrl(url));
+
     // 设置请求头
     request.setHeader(QNetworkRequest::ContentTypeHeader,QVariant("application/json"));     // 请求类型
     request.setHeader(QNetworkRequest::ContentLengthHeader,QVariant(array.size()));          // 数据大小
@@ -354,15 +372,19 @@ void Login::on_resgin_confirm_btn_clicked()
     //发送请求
     QNetworkReply* reply = m_manager->post(request,array);
 
-
     // 获取响应信号
     connect(reply,&QNetworkReply::readyRead,[=]()
     {
+        if(reply->error() != QNetworkReply::NoError)
+        {
+            cout << reply->errorString();
+            return ;
+        }
         QByteArray jsonDate = reply->readAll();
         // 读取retcode状态
 
         QString code = m_common.getCode(jsonDate);
-        if(code == "010")
+        if(code == "100")
         {
             ui->re_status->setText("注册成功！正在为您返回登录界面..");
 
@@ -383,19 +405,19 @@ void Login::on_resgin_confirm_btn_clicked()
             // 切换到登录页面
             ui->stackedWidget->setCurrentWidget(ui->sginin_page);
         }
-        else if(code == "011")
+        else if(code == "101")
         {
             ui->re_status->setText(QString("注册失败,[%1]该用户已经存在!").arg(user));
         }
-        else if(code == "012")
+        else if(code == "102")
         {
             ui->re_status->setText(QString("注册失败,[%1]该手机已经注册!").arg(phone));
         }
-        else if(code == "013")
+        else if(code == "103")
         {
             ui->re_status->setText(QString("注册失败,[%1]该邮箱已经注册!").arg(email));
         }
-        else if(code == "014")
+        else if(code == "104")
         {
             ui->re_status->setText(QString("注册失败,[%1]该名称已被占用!").arg(phone));
         }else

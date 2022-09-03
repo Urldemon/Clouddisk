@@ -1,6 +1,8 @@
 #ifndef AESKEY_H
 #define AESKEY_H
+#if _MSC_VER >=1600
 #pragma execution_character_set("utf-8")
+#endif
 // 單例對象
 // 负责加密解密的对象
 

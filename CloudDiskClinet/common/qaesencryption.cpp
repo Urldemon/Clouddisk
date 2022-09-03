@@ -1,7 +1,10 @@
 #include "qaesencryption.h"
+#if _MSC_VER >=1600
+#pragma execution_character_set("utf-8")
+#endif
 #include <QDebug>
 #include <QVector>
-#pragma execution_character_set("utf-8")
+
 
 #ifdef USE_INTEL_AES_IF_AVAILABLE
 #include "aesni/aesni-key-exp.h"
